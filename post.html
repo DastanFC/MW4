@@ -2,37 +2,271 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>MW4 News - Noticia</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background: #0a0a0a; color: #e0e0e0; line-height: 1.6; }
-        header { background: linear-gradient(135deg, #000000 0%, #0a1f0a 100%); padding: 2rem; text-align: center; border-bottom: 3px solid #4caf50; }
-        .logo { font-size: 2rem; font-weight: 900; letter-spacing: 3px; color: #ffffff; }
-        .logo span { color: #4caf50; font-size: 2.2rem; }
-        .logo a { text-decoration: none; color: inherit; }
-        .nav-bar { background: #111; padding: 0.8rem 2rem; border-bottom: 1px solid #1e2a1e; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .back-home { color: #4caf50; text-decoration: none; font-weight: 700; }
-        .share-buttons { display: flex; gap: 1rem; }
-        .share-btn { background: transparent; border: 1px solid #4caf50; color: #4caf50; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; }
-        .post-container { max-width: 900px; margin: 3rem auto; padding: 0 2rem; }
-        .post-cover { width: 100%; max-height: 450px; object-fit: cover; border-radius: 12px; margin-bottom: 2rem; }
-        .post-tag { display: inline-block; padding: 0.3rem 1.2rem; font-size: 0.8rem; font-weight: 700; border-radius: 20px; margin-bottom: 1rem; text-transform: uppercase; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #000000 0%, #0a1f0a 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 3px solid #4caf50;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #ffffff;
+        }
+
+        .logo span {
+            color: #4caf50;
+            font-size: 2.2rem;
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-bar {
+            background: #111;
+            padding: 0.8rem 2rem;
+            border-bottom: 1px solid #1e2a1e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .back-home {
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .back-home:hover {
+            transform: translateX(-5px);
+            color: #6dbf6d;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: transparent;
+            border: 1px solid #4caf50;
+            color: #4caf50;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .share-btn:hover {
+            background: #4caf50;
+            color: black;
+        }
+
+        .post-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .post-cover {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #1e2a1e;
+        }
+
+        .post-tag {
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
         .tag-oficial { background: #4caf50; color: #000; }
         .tag-noticia { background: #2196f3; color: #fff; }
         .tag-rumor { background: #ff9800; color: #000; }
         .tag-review { background: #9c27b0; color: #fff; }
-        .post-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 1rem; color: #ffffff; }
-        .post-date { color: #4caf50; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #1e2a1e; }
-        .post-content { font-size: 1.1rem; line-height: 1.8; }
-        .post-content p { margin-bottom: 1rem; }
-        .post-content img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
-        .post-content iframe { width: 100%; aspect-ratio: 16/9; border-radius: 12px; margin: 1rem 0; border: none; }
-        footer { text-align: center; padding: 2rem; background: #050505; border-top: 1px solid #1e2a1e; color: #666; }
-        .error-message { text-align: center; padding: 3rem; color: #ff6b6b; }
-        @media (max-width: 768px) { .post-title { font-size: 1.8rem; } }
+
+        .post-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            line-height: 1.3;
+        }
+
+        .post-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4caf50;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1e2a1e;
+        }
+
+        .post-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2rem;
+        }
+
+        .post-content h2 {
+            color: #4caf50;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .post-content h3 {
+            color: #4caf50;
+            margin: 1.2rem 0 0.8rem;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid #1e2a1e;
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        .post-content a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+
+        .post-content a:hover {
+            text-decoration: underline;
+        }
+
+        .post-content blockquote {
+            border-left: 4px solid #4caf50;
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #cccccc;
+        }
+
+        .post-content iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border: none;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loader i {
+            font-size: 3rem;
+            color: #4caf50;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 3rem;
+            color: #ff6b6b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #050505;
+            border-top: 1px solid #1e2a1e;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        /* ===== RESPONSIVE MÓVIL ===== */
+        @media (max-width: 768px) {
+            .post-title { 
+                font-size: 1.5rem; 
+            }
+            
+            .post-container { 
+                padding: 0 1rem; 
+                margin: 1.5rem auto;
+            }
+            
+            .post-content {
+                font-size: 1rem;
+            }
+            
+            .post-content iframe {
+                min-height: 200px;
+            }
+            
+            .share-buttons { 
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            .nav-bar { 
+                flex-direction: column; 
+                text-align: center; 
+                gap: 0.5rem;
+                padding: 0.8rem 1rem;
+            }
+            
+            .share-btn {
+                padding: 0.3rem 0.7rem;
+                font-size: 0.7rem;
+            }
+            
+            .post-cover {
+                max-height: 250px;
+            }
+            
+            .post-tag {
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -54,14 +288,15 @@
 </div>
 
 <div class="post-container" id="postContainer">
-    <div class="loader" style="text-align:center; padding:2rem;"><i class="fas fa-circle-notch fa-spin"></i> Cargando...</div>
+    <div class="loader"><i class="fas fa-circle-notch"></i> Cargando noticia...</div>
 </div>
 
 <footer>
-    <p>Modern Warfare 4 © 2026 - Fan Blog no oficial</p>
+    <p>Modern Warfare 4 © 2026 - Fan Blog no oficial | <i class="fas fa-skull"></i> Task Force 141</p>
 </footer>
 
 <script>
+    // Configuración - Usa la URL completa del JSON
     const POSTS_URL = 'https://raw.githubusercontent.com/DastanFC/Modernwarfare4-2026/main/posts.json';
     let currentPost = null;
 
@@ -70,64 +305,111 @@
         return params.get('id');
     }
 
-    function convertYouTubeUrls(html) {
+    function convertYouTubeUrlsToEmbed(html) {
         if (!html) return '';
-        const youtubeRegex = /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/gi;
+        const youtubeRegex = /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/gi;
         return html.replace(youtubeRegex, (match, videoId) => {
-            return `<iframe width="100%" height="auto" style="aspect-ratio:16/9; border-radius:12px; border:none; margin:1rem 0;" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            return `<iframe width="100%" style="aspect-ratio:16/9; border-radius:12px; border:none;" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         });
-    }
-
-    function cleanHtml(html) {
-        if (!html) return '';
-        return html.replace(/<p>\s*<\/p>/g, '').replace(/<p><br><\/p>/g, '').replace(/(<br>\s*){3,}/g, '<br><br>');
     }
 
     async function loadPost() {
         const postId = getPostIdFromURL();
         const container = document.getElementById('postContainer');
-        if (!postId) { container.innerHTML = '<div class="error-message">No se especificó ninguna noticia.</div>'; return; }
+        
+        if (!postId) {
+            container.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> No se especificó ninguna noticia.</div>';
+            return;
+        }
         
         try {
             const response = await fetch(POSTS_URL + '?t=' + new Date().getTime());
             if (!response.ok) throw new Error('No se pudo cargar posts.json');
+            
             const posts = await response.json();
             currentPost = posts.find(p => p.id == postId);
-            if (!currentPost) { container.innerHTML = '<div class="error-message">Noticia no encontrada.</div>'; return; }
+            
+            if (!currentPost) {
+                container.innerHTML = '<div class="error-message"><i class="fas fa-skull"></i> Noticia no encontrada.</div>';
+                return;
+            }
             
             document.title = `${currentPost.title} - MW4 News`;
-            let contentHTML = currentPost.content || '<p>Contenido no disponible</p>';
-            contentHTML = cleanHtml(contentHTML);
-            contentHTML = convertYouTubeUrls(contentHTML);
+            
+            const tagClass = {
+                'oficial': 'tag-oficial',
+                'noticia': 'tag-noticia',
+                'rumor': 'tag-rumor',
+                'review': 'tag-review'
+            }[currentPost.tag] || 'tag-noticia';
             
             const dateObj = new Date(currentPost.date);
-            const formattedDate = dateObj.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedDate = dateObj.toLocaleDateString('es-ES', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
             
-            let html = '';
-            if (currentPost.image) html += `<img class="post-cover" src="${currentPost.image}" alt="${escapeHtml(currentPost.title)}" onerror="this.style.display='none'">`;
-            html += `<span class="post-tag tag-${currentPost.tag}">${currentPost.tag.toUpperCase()}</span>`;
-            html += `<h1 class="post-title">${escapeHtml(currentPost.title)}</h1>`;
-            html += `<div class="post-date"><i class="far fa-calendar-alt"></i> ${formattedDate}</div>`;
-            html += `<div class="post-content">${contentHTML}</div>`;
-            container.innerHTML = html;
+            let contentHTML = currentPost.content || '<p>Contenido no disponible</p>';
+            contentHTML = convertYouTubeUrlsToEmbed(contentHTML);
+            
+            container.innerHTML = `
+                ${currentPost.image ? `<img class="post-cover" src="${currentPost.image}" alt="${currentPost.title}" onerror="this.style.display='none'">` : ''}
+                <span class="post-tag ${tagClass}">${currentPost.tag.toUpperCase()}</span>
+                <h1 class="post-title">${escapeHtml(currentPost.title)}</h1>
+                <div class="post-date"><i class="far fa-calendar-alt"></i> ${formattedDate}</div>
+                <div class="post-content">${contentHTML}</div>
+            `;
+            
         } catch (error) {
-            container.innerHTML = `<div class="error-message">Error cargando la noticia: ${error.message}</div>`;
+            console.error('Error:', error);
+            container.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> Error cargando la noticia.</div>';
         }
     }
     
-    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-    function shareOnTwitter() { if (!currentPost) return; window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentPost.title)}&url=${encodeURIComponent(window.location.href)}`, '_blank'); }
-    function shareOnFacebook() { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank'); }
-    function shareOnWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(currentPost.title)}%20${encodeURIComponent(window.location.href)}`, '_blank'); }
-    function copyLink() { navigator.clipboard.writeText(window.location.href).then(() => alert('✅ Enlace copiado')).catch(() => alert('❌ Error')); }
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
     
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('shareTwitter')?.addEventListener('click', shareOnTwitter);
-        document.getElementById('shareFacebook')?.addEventListener('click', shareOnFacebook);
-        document.getElementById('shareWhatsApp')?.addEventListener('click', shareOnWhatsApp);
-        document.getElementById('copyLink')?.addEventListener('click', copyLink);
-    });
+    function shareOnTwitter() {
+        if (!currentPost) return;
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent(currentPost.title);
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    }
+    
+    function shareOnFacebook() {
+        const url = encodeURIComponent(window.location.href);
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    }
+    
+    function shareOnWhatsApp() {
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent(currentPost.title);
+        window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+    }
+    
+    function copyLink() {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('✅ Enlace copiado al portapapeles');
+        }).catch(() => {
+            alert('❌ No se pudo copiar el enlace');
+        });
+    }
+    
+    document.getElementById('shareTwitter').addEventListener('click', shareOnTwitter);
+    document.getElementById('shareFacebook').addEventListener('click', shareOnFacebook);
+    document.getElementById('shareWhatsApp').addEventListener('click', shareOnWhatsApp);
+    document.getElementById('copyLink').addEventListener('click', copyLink);
+    
     loadPost();
 </script>
+
 </body>
 </html>
