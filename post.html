@@ -146,6 +146,10 @@
             margin-bottom: 1.2rem;
         }
 
+        /* Evitar que el navegador colapse saltos dentro de párrafos con <br> */
+        .post-content p:empty { display: none; }
+        .post-content br + br { display: none; } /* nunca más de un salto doble */
+
         .post-content h2 {
             color: #4caf50;
             margin: 1.5rem 0 1rem;
@@ -267,40 +271,6 @@
                 font-size: 0.7rem;
             }
         }
-
-function textToHtml(text) {
-    if (!text) return '';
-    let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    
-    // YouTube
-    const youtubeRegex = /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/g;
-    html = html.replace(youtubeRegex, `<div style="margin:1rem 0;"><iframe width="100%" style="aspect-ratio:16/9; border-radius:12px;" src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe></div>`);
-    
-    // Imágenes
-    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%; margin:1rem 0;">');
-    
-    // Negritas y cursivas
-    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-    
-    // Listas
-    html = html.replace(/^[-•]\s+(.+)$/gm, '<li>$1</li>');
-    html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-    html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
-    
-    // Párrafos
-    const paragraphs = html.split(/\n\s*\n/);
-    html = paragraphs.map(p => {
-        p = p.trim();
-        if (!p) return '';
-        if (p.startsWith('<ul>') || p.startsWith('<ol>')) return p;
-        p = p.replace(/\n/g, '<br>');
-        return `<p>${p}</p>`;
-    }).join('');
-    
-    return html;
-}
-        
     </style>
 </head>
 <body>
@@ -339,12 +309,53 @@ function textToHtml(text) {
         return params.get('id');
     }
 
+    function procesarContenido(raw) {
+        if (!raw) return '';
+
+        // Detectar si ya es HTML del editor WYSIWYG (nuevo admin)
+        const esHTML = /<[a-zA-Z][^>]*>/.test(raw);
+
+        if (esHTML) {
+            // Ya viene con etiquetas HTML — solo asegurarse de convertir URLs de YT sueltas que no sean ya iframes
+            return raw.replace(
+                /(?<!=["'])(?<![/]embed[/])https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)([^\s<"]*)/gi,
+                (match, videoId) =>
+                    `<iframe width="100%" style="aspect-ratio:16/9;border-radius:12px;border:none;" src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`
+            );
+        }
+
+        // Contenido de texto plano / markdown básico (posts viejos)
+
+        // Markdown imagen: ![alt](url)
+        raw = raw.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
+            (_, alt, url) => `\n<img src="${url}" alt="${alt}" style="max-width:100%;border-radius:8px;margin:1rem 0;">\n`
+        );
+
+        // URLs de YouTube sueltas
+        raw = raw.replace(
+            /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)([^\s]*)/gi,
+            (match, videoId) =>
+                `\n<iframe width="100%" style="aspect-ratio:16/9;border-radius:12px;border:none;" src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>\n`
+        );
+
+        // Markdown básico: **negrita** *cursiva*
+        raw = raw.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        raw = raw.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+        // Doble salto de línea → párrafos; salto simple → <br>
+        const parrafos = raw.split(/\n{2,}/);
+        raw = parrafos.map(bloque => {
+            bloque = bloque.trim();
+            if (!bloque) return '';
+            if (/^<(img|iframe|h[1-6]|ul|ol|li|blockquote)/i.test(bloque)) return bloque;
+            return '<p>' + bloque.replace(/\n/g, '<br>') + '</p>';
+        }).filter(Boolean).join('\n');
+
+        return raw;
+    }
+
     function convertYouTubeUrlsToEmbed(html) {
-        if (!html) return '';
-        const youtubeRegex = /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/gi;
-        return html.replace(youtubeRegex, (match, videoId) => {
-            return `<iframe width="100%" style="aspect-ratio:16/9; border-radius:12px; border:none;" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        });
+        return procesarContenido(html);
     }
 
     async function loadPost() {
@@ -387,8 +398,8 @@ function textToHtml(text) {
                 minute: '2-digit'
             });
             
-            let contentHTML = currentPost.content || '<p>Contenido no disponible</p>';
-            contentHTML = convertYouTubeUrlsToEmbed(contentHTML);
+            let contentHTML = procesarContenido(currentPost.content || '');
+            if (!contentHTML) contentHTML = '<p>Contenido no disponible</p>';
             
             container.innerHTML = `
                 ${currentPost.image ? `<img class="post-cover" src="${currentPost.image}" alt="${currentPost.title}" onerror="this.style.display='none'">` : ''}
