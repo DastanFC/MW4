@@ -2,513 +2,363 @@
 <html lang="es">
 <head>
     <link rel="icon" type="image/png" href="favicon.ico">
-<link rel="apple-touch-icon" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>MW4 News - Modern Warfare 4 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #0a0a0a; color: #e0e0e0; line-height: 1.6; overflow-x: hidden; }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
         @keyframes glowPulse {
-            0% { text-shadow: 0 0 5px rgba(76, 175, 80, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(76, 175, 80, 0.8); }
-            100% { text-shadow: 0 0 5px rgba(76, 175, 80, 0.3); }
+            0%   { text-shadow: 0 0 5px rgba(76,175,80,0.3); }
+            50%  { text-shadow: 0 0 20px rgba(76,175,80,0.8); }
+            100% { text-shadow: 0 0 5px rgba(76,175,80,0.3); }
         }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        @keyframes shimmer { 0% { background-position:-400px 0; } 100% { background-position:400px 0; } }
 
         header {
-            background: linear-gradient(135deg, #000000 0%, #0a1f0a 100%);
-            padding: 3rem 2rem;
-            text-align: center;
+            background: linear-gradient(135deg, #000 0%, #0a1f0a 100%);
+            padding: 2.2rem 2rem 1.8rem;
             border-bottom: 3px solid #4caf50;
         }
-
-        .logo {
-            font-size: 3rem;
-            font-weight: 900;
-            letter-spacing: 5px;
-            color: #ffffff;
-            animation: glowPulse 2s ease-in-out infinite;
+        .header-inner {
+            display: flex; align-items: flex-start; justify-content: center;
+            position: relative; max-width: 1400px; margin: 0 auto;
         }
+        .logo-container { text-align: center; }
+        .logo { font-size: 3rem; font-weight: 900; letter-spacing: 5px; color: #fff; animation: glowPulse 2s ease-in-out infinite; }
+        .logo span { color: #4caf50; font-size: 3.5rem; }
+        .logo a { text-decoration: none; color: inherit; }
+        .tagline { color: #4caf50; font-weight: 700; letter-spacing: 3px; margin-top: 0.5rem; font-size: 0.8rem; }
+        .last-update { position: absolute; right: 0; top: 0; font-size: 0.62rem; color: #555; text-align: right; line-height: 1.6; }
+        .last-update span { display: block; color: #4caf50; font-weight: 700; font-size: 0.68rem; }
 
-        .logo span {
-            color: #4caf50;
-            font-size: 3.5rem;
+        .filters-wrapper {
+            background: rgba(15,15,15,0.97); backdrop-filter: blur(10px);
+            border-bottom: 1px solid #1e2a1e; position: sticky; top: 0; z-index: 10;
         }
-
-        .logo a {
-            text-decoration: none;
-            color: inherit;
+        .search-bar { display: flex; align-items: center; max-width: 380px; margin: 0 auto; padding: 0.7rem 1.5rem 0; gap: 0.5rem; }
+        .search-icon { color: #555; font-size: 0.72rem; }
+        .search-input {
+            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(76,175,80,0.3);
+            border-radius: 6px; color: #e0e0e0; padding: 0.35rem 0.75rem;
+            font-family: 'Roboto', sans-serif; font-size: 0.72rem; outline: none; transition: border-color 0.2s;
         }
+        .search-input:focus { border-color: #4caf50; }
+        .search-input::placeholder { color: #555; }
+        .search-clear { background: none; border: none; color: #555; cursor: pointer; font-size: 0.75rem; padding: 0.2rem 0.4rem; transition: color 0.2s; display: none; }
+        .search-clear.visible { display: block; color: #4caf50; }
 
-        .tagline {
-            color: #4caf50;
-            font-weight: 700;
-            letter-spacing: 3px;
-            margin-top: 0.5rem;
-            font-size: 0.8rem;
+        .filter-toggle {
+            display: none; width: 100%; background: none; border: none; color: #4caf50;
+            font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 1px;
+            padding: 0.55rem 1.5rem; cursor: pointer; text-align: left; align-items: center; gap: 0.4rem;
         }
+        .filter-toggle .chev { margin-left: auto; transition: transform 0.3s; }
+        .filter-toggle.open .chev { transform: rotate(180deg); }
 
-        .filters {
-            display: flex;
-            justify-content: center;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            padding: 1.5rem;
-            background: rgba(15, 15, 15, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #1e2a1e;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
+        .filters { display: flex; justify-content: center; gap: 0.45rem; flex-wrap: wrap; padding: 0.75rem 1.5rem 0.9rem; }
         .filter-btn {
-            background: transparent;
-            border: 1px solid #4caf50;
-            color: #4caf50;
-            padding: 0.5rem 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Roboto', sans-serif;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            background: transparent; border: 1px solid rgba(76,175,80,0.4); color: #888;
+            padding: 0.25rem 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif; border-radius: 4px; font-size: 0.65rem; white-space: nowrap;
         }
+        .filter-btn .count {
+            display: inline-block; background: rgba(76,175,80,0.15); color: #4caf50;
+            border-radius: 10px; padding: 0 5px; font-size: 0.58rem; margin-left: 3px;
+        }
+        .filter-btn:hover, .filter-btn.active { background: #4caf50; color: #000; border-color: #4caf50; box-shadow: 0 0 10px rgba(76,175,80,0.35); }
+        .filter-btn.active .count { background: rgba(0,0,0,0.2); color: #000; }
 
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: #4caf50;
-            color: #000000;
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
-        }
+        .news-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; align-items: start; }
 
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            align-items: start;
-        }
+        .skeleton-card { background: rgba(17,17,17,0.95); border-radius: 12px; border: 1px solid rgba(76,175,80,0.1); overflow: hidden; }
+        .skeleton-img { height: 180px; background: linear-gradient(90deg,#1a1a1a 25%,#252525 50%,#1a1a1a 75%); background-size: 800px 100%; animation: shimmer 1.4s infinite; }
+        .skeleton-body { padding: 1rem; }
+        .skeleton-line { height: 10px; border-radius: 4px; margin-bottom: 10px; background: linear-gradient(90deg,#1a1a1a 25%,#252525 50%,#1a1a1a 75%); background-size: 800px 100%; animation: shimmer 1.4s infinite; }
+        .skeleton-line.s { width: 38%; } .skeleton-line.m { width: 72%; } .skeleton-line.f { width: 100%; } .skeleton-line.t { height: 14px; width: 88%; }
 
         .news-card {
-            background: linear-gradient(135deg, rgba(17, 17, 17, 0.95), rgba(10, 10, 10, 0.95));
-            backdrop-filter: blur(5px);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            border: 1px solid rgba(76, 175, 80, 0.3);
-            animation: fadeInUp 0.5s ease-out backwards;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, rgba(17,17,17,0.95), rgba(10,10,10,0.95));
+            border-radius: 12px; overflow: hidden; transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            cursor: pointer; border: 1px solid rgba(76,175,80,0.3); animation: fadeInUp 0.5s ease-out backwards;
+            display: flex; flex-direction: column;
         }
+        .news-card:hover { transform: translateY(-5px); border-color: #4caf50; box-shadow: 0 10px 25px rgba(76,175,80,0.2); }
 
-        .news-card:hover {
-            transform: translateY(-5px);
-            border-color: #4caf50;
-            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.2);
-        }
+        .image-container { position: relative; overflow: hidden; height: 180px; }
+        .card-image { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center top; transition: transform 0.5s ease; }
+        .news-card:hover .card-image { transform: scale(1.02); }
 
-        .image-container {
-            position: relative;
-            overflow: hidden;
-            /* Sin altura fija: la imagen se muestra completa */
-        }
-
-        .card-image {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .news-card:hover .card-image {
-            transform: scale(1.02);
-        }
-
-        .card-content {
-            padding: 1rem;
-        }
-
-        .card-tag {
-            display: inline-block;
-            padding: 0.2rem 0.7rem;
-            font-size: 0.6rem;
-            font-weight: 700;
-            border-radius: 20px;
-            margin-bottom: 0.6rem;
-            text-transform: uppercase;
-        }
-
-        .tag-oficial { background: #4caf50; color: #000; }
-        .tag-noticia { background: #2196f3; color: #fff; }
-        .tag-rumor { background: #ff9800; color: #000; }
-        .tag-review { background: #9c27b0; color: #fff; }
-        .tag-mapas   { background: #1b5e20; color: #69f0ae; }
-        .tag-clases  { background: #1a237e; color: #c5cae9; }
-        .tag-armas   { background: #b71c1c; color: #ffcdd2; }
-        .tag-modos   { background: #4a148c; color: #e1bee7; }
-        .tag-warzone { background: #e65100; color: #ffe0b2; }
-        .tag-dmz     { background: #33691e; color: #dcedc8; }
-        .tag-campana { background: #783500; color: #ffd54f; }
-        .tag-skins   { background: #880e4f; color: #fce4ec; }
-        .tag-informacion  { background: #006064; color: #80deea; }
-        .tag-curiosidades { background: #37474f; color: #b0bec5; }
-        .tag-ediciones    { background: #4a148c; color: #ea80fc; }
-
-        /* Badge ACTUALIZADO */
         .updated-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: linear-gradient(135deg, #ff6f00, #ffab00);
-            color: #000;
-            font-size: 0.55rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            box-shadow: 0 2px 8px rgba(255,111,0,0.5);
-            z-index: 2;
+            position: absolute; top: 8px; right: 8px;
+            background: linear-gradient(135deg, #ff6f00, #ffab00); color: #000;
+            font-size: 0.52rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 4px; display: flex; align-items: center; gap: 3px;
+            box-shadow: 0 2px 8px rgba(255,111,0,0.5); z-index: 2;
+        }
+        .new-badge {
+            position: absolute; top: 8px; left: 8px; background: #e53935; color: #fff;
+            font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
+            padding: 3px 7px; border-radius: 4px; z-index: 2; box-shadow: 0 2px 6px rgba(229,57,53,0.6);
         }
 
-        .card-title {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 0.3rem;
-            color: #ffffff;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        .card-content { padding: 1rem; flex: 1; display: flex; flex-direction: column; }
+        .card-tag { display: inline-block; padding: 0.15rem 0.6rem; font-size: 0.52rem; font-weight: 700; border-radius: 20px; margin-bottom: 0.5rem; text-transform: uppercase; align-self: flex-start; }
+        .tag-oficial { background:#4caf50;color:#000; } .tag-noticia { background:#2196f3;color:#fff; }
+        .tag-rumor { background:#ff9800;color:#000; } .tag-review { background:#9c27b0;color:#fff; }
+        .tag-mapas { background:#1b5e20;color:#69f0ae; } .tag-clases { background:#1a237e;color:#c5cae9; }
+        .tag-armas { background:#b71c1c;color:#ffcdd2; } .tag-modos { background:#4a148c;color:#e1bee7; }
+        .tag-warzone { background:#e65100;color:#ffe0b2; } .tag-dmz { background:#33691e;color:#dcedc8; }
+        .tag-campana { background:#783500;color:#ffd54f; } .tag-skins { background:#880e4f;color:#fce4ec; }
+        .tag-informacion { background:#006064;color:#80deea; } .tag-curiosidades { background:#37474f;color:#b0bec5; }
+        .tag-ediciones { background:#4a148c;color:#ea80fc; }
 
-        .card-date {
-            font-size: 0.65rem;
-            color: #4caf50;
-            margin-bottom: 0.5rem;
+        .card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; color: #fff; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+        .card-date { font-size: 0.6rem; color: #4caf50; margin-bottom: 0.4rem; }
+        .card-excerpt { font-size: 0.72rem; color: #aaa; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.7rem; }
+        .card-share { display: flex; align-items: center; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid rgba(76,175,80,0.12); }
+        .share-btn {
+            background: none; border: 1px solid rgba(76,175,80,0.3); color: #666; border-radius: 4px;
+            padding: 0.2rem 0.6rem; font-size: 0.58rem; cursor: pointer; font-family: 'Roboto', sans-serif;
+            font-weight: 700; transition: all 0.2s; display: flex; align-items: center; gap: 4px;
         }
-
-        .card-excerpt {
-            font-size: 0.75rem;
-            color: #aaaaaa;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        .share-btn:hover { border-color: #4caf50; color: #4caf50; }
+        .share-btn.copied { border-color: #4caf50; color: #4caf50; background: rgba(76,175,80,0.1); }
 
         .load-more {
-            display: block;
-            margin: 1rem auto 3rem;
-            background: transparent;
-            border: 2px solid #4caf50;
-            color: #4caf50;
-            padding: 0.7rem 2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Roboto', sans-serif;
+            display: block; margin: 1rem auto 3rem; background: transparent; border: 2px solid #4caf50;
+            color: #4caf50; padding: 0.7rem 2rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+            font-family: 'Roboto', sans-serif; border-radius: 4px; font-size: 0.8rem;
         }
+        .load-more:hover { background: #4caf50; color: #000; box-shadow: 0 0 15px rgba(76,175,80,0.4); }
 
-        .load-more:hover {
-            background: #4caf50;
-            color: #000000;
-            transform: scale(1.02);
-            box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+        .scroll-top {
+            position: fixed; bottom: 1.5rem; right: 1.5rem; background: #4caf50; color: #000;
+            border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 0.85rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(76,175,80,0.4); z-index: 100;
         }
+        .scroll-top.visible { opacity: 1; pointer-events: all; }
+        .scroll-top:hover { transform: scale(1.1); }
 
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            background: #050505;
-            border-top: 1px solid #1e2a1e;
-            color: #666;
-            font-size: 0.7rem;
-        }
+        footer { text-align: center; padding: 1.5rem; background: #050505; border-top: 1px solid #1e2a1e; color: #666; font-size: 0.7rem; }
+        .loader { text-align: center; padding: 2rem; grid-column: 1/-1; }
+        .loader i { font-size: 2rem; color: #4caf50; animation: spin 1s linear infinite; }
 
-        .loader {
-            text-align: center;
-            padding: 2rem;
-            grid-column: 1/-1;
+        @media (max-width:1200px) { .news-grid { grid-template-columns:repeat(3,1fr); gap:1rem; } }
+        @media (max-width:900px) { .news-grid { grid-template-columns:repeat(2,1fr); } .logo { font-size:2rem; } .logo span { font-size:2.5rem; } }
+        @media (max-width:600px) {
+            .news-grid { grid-template-columns:1fr; padding:0 1rem; }
+            .logo { font-size:1.5rem; } .logo span { font-size:2rem; }
+            .tagline { font-size:0.6rem; letter-spacing:1px; }
+            .card-title { font-size:0.9rem; } .card-excerpt { font-size:0.7rem; }
+            header { padding:1.5rem 1rem 1.2rem; } .image-container { height:160px; }
+            .last-update { font-size:0.55rem; }
+            .filter-toggle { display:flex; border-bottom:1px solid rgba(76,175,80,0.1); }
+            .filters { max-height:0; overflow:hidden; padding:0 1rem; transition:max-height 0.35s ease,padding 0.35s ease; }
+            .filters.open { max-height:400px; padding:0.6rem 1rem 0.8rem; }
+            .search-bar { padding:0.6rem 1rem 0; }
         }
-
-        .loader i {
-            font-size: 2rem;
-            color: #4caf50;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1200px) {
-            .news-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-        }
-
-        @media (max-width: 900px) {
-            .news-grid { grid-template-columns: repeat(2, 1fr); }
-            .logo { font-size: 2rem; }
-            .logo span { font-size: 2.5rem; }
-        }
-
-        @media (max-width: 600px) {
-            .news-grid { grid-template-columns: 1fr; padding: 0 1rem; }
-            .logo { font-size: 1.5rem; }
-            .logo span { font-size: 2rem; }
-            .tagline { font-size: 0.6rem; letter-spacing: 1px; }
-            .filters { gap: 0.4rem; padding: 0.8rem; }
-            .filter-btn { padding: 0.3rem 0.7rem; font-size: 0.65rem; }
-            .card-title { font-size: 0.9rem; }
-            .card-excerpt { font-size: 0.7rem; }
-            /* image-container sin altura fija en mobile también */
-            header { padding: 1.5rem; }
-        }
-
-        @media (max-width: 480px) {
-            .news-grid { gap: 0.8rem; }
-            .card-content { padding: 0.7rem; }
-        }
+        @media (max-width:480px) { .news-grid { gap:0.8rem; } .card-content { padding:0.7rem; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-container">
-        <h1 class="logo"><a href="index.html">MODERN WARFARE <span>4</span></a></h1>
-        <p class="tagline">2026 • NOTICIAS OFICIALES</p>
+    <div class="header-inner">
+        <div class="logo-container">
+            <h1 class="logo"><a href="index.html">MODERN WARFARE <span>4</span></a></h1>
+            <p class="tagline">2026 • NOTICIAS OFICIALES</p>
+        </div>
+        <div class="last-update" id="lastUpdate">
+            <i class="far fa-clock"></i> Última actualización<br>
+            <span id="lastUpdateTime">—</span>
+        </div>
     </div>
 </header>
 
 <main>
-    <div class="filters">
-        <button class="filter-btn active" data-filter="all">TODAS</button>
-        <button class="filter-btn" data-filter="noticia"><i class="fas fa-newspaper"></i> NOTICIA</button>
-        <button class="filter-btn" data-filter="oficial"><i class="fas fa-check-circle"></i> OFICIAL</button>
-        <button class="filter-btn" data-filter="rumor"><i class="fas fa-microphone-alt"></i> RUMOR</button>
-        <button class="filter-btn" data-filter="informacion">📡 INFORMACIÓN</button>
-        <button class="filter-btn" data-filter="curiosidades">🧠 CURIOSIDADES</button>
-        <button class="filter-btn" data-filter="ediciones">💎 EDICIONES</button>
-        <button class="filter-btn" data-filter="review"><i class="fas fa-star"></i> REVIEW</button>
-        <button class="filter-btn" data-filter="mapas">🗺️ MAPAS</button>
-        <button class="filter-btn" data-filter="clases">🎖️ CLASES</button>
-        <button class="filter-btn" data-filter="armas">🔫 ARMAS</button>
-        <button class="filter-btn" data-filter="modos">🎮 MODOS</button>
-        <button class="filter-btn" data-filter="warzone">🪂 WARZONE</button>
-        <button class="filter-btn" data-filter="skins">🎨 SKINS</button>
+    <div class="filters-wrapper">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar noticias...">
+            <button class="search-clear" id="searchClear" title="Limpiar">✕</button>
+        </div>
+        <button class="filter-toggle" id="filterToggle">
+            <i class="fas fa-filter"></i>&nbsp;FILTRAR POR CATEGORÍA
+            <i class="fas fa-chevron-down chev"></i>
+        </button>
+        <div class="filters" id="filtersContainer">
+            <button class="filter-btn active" data-filter="all">TODAS <span class="count" id="count-all">0</span></button>
+            <button class="filter-btn" data-filter="noticia">📰 NOTICIA <span class="count" id="count-noticia">0</span></button>
+            <button class="filter-btn" data-filter="oficial">✓ OFICIAL <span class="count" id="count-oficial">0</span></button>
+            <button class="filter-btn" data-filter="rumor">🔮 RUMOR <span class="count" id="count-rumor">0</span></button>
+            <button class="filter-btn" data-filter="informacion">📡 INFORMACIÓN <span class="count" id="count-informacion">0</span></button>
+            <button class="filter-btn" data-filter="curiosidades">🧠 CURIOSIDADES <span class="count" id="count-curiosidades">0</span></button>
+            <button class="filter-btn" data-filter="ediciones">💎 EDICIONES <span class="count" id="count-ediciones">0</span></button>
+            <button class="filter-btn" data-filter="review">⭐ REVIEW <span class="count" id="count-review">0</span></button>
+            <button class="filter-btn" data-filter="mapas">🗺️ MAPAS <span class="count" id="count-mapas">0</span></button>
+            <button class="filter-btn" data-filter="clases">🎖️ CLASES <span class="count" id="count-clases">0</span></button>
+            <button class="filter-btn" data-filter="armas">🔫 ARMAS <span class="count" id="count-armas">0</span></button>
+            <button class="filter-btn" data-filter="modos">🎮 MODOS <span class="count" id="count-modos">0</span></button>
+            <button class="filter-btn" data-filter="warzone">🪂 WARZONE <span class="count" id="count-warzone">0</span></button>
+            <button class="filter-btn" data-filter="skins">🎨 SKINS <span class="count" id="count-skins">0</span></button>
+        </div>
     </div>
 
-    <div class="news-grid" id="newsGrid">
-        <div class="loader"><i class="fas fa-circle-notch"></i> Cargando noticias...</div>
-    </div>
-
-    <button id="loadMoreBtn" class="load-more"><i class="fas fa-arrow-down"></i> MOSTRAR MÁS</button>
+    <div class="news-grid" id="newsGrid"></div>
+    <button id="loadMoreBtn" class="load-more" style="display:none"><i class="fas fa-arrow-down"></i> MOSTRAR MÁS</button>
 </main>
 
 <footer>
     <p>Modern Warfare 4 © 2026 - Fan Blog no oficial | <i class="fas fa-skull"></i> Task Force 141</p>
 </footer>
 
-<script>
-    // Configuración
-    const POSTS_URL = 'https://raw.githubusercontent.com/DastanFC/MW4/main/posts.json';
-    
-    let allPosts = [];
-    let visiblePosts = 8;
-    let currentFilter = 'all';
+<button class="scroll-top" id="scrollTop" title="Volver arriba">
+    <i class="fas fa-chevron-up"></i>
+</button>
 
-    async function loadPosts() {
-        const grid = document.getElementById('newsGrid');
-        try {
-            const response = await fetch(POSTS_URL + '?t=' + new Date().getTime());
-            if (!response.ok) throw new Error('No se pudo cargar posts.json');
-            allPosts = await response.json();
-            renderPosts();
-        } catch (error) {
-            console.error('Error:', error);
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem;"><i class="fas fa-exclamation-triangle"></i> Error cargando noticias.</div>';
-            document.getElementById('loadMoreBtn').style.display = 'none';
+<script>
+    const POSTS_URL = 'https://raw.githubusercontent.com/DastanFC/MW4/main/posts.json';
+    let allPosts = [], visiblePosts = 8, currentFilter = 'all', searchQuery = '';
+
+    function updateLastUpdateTime() {
+        const now = new Date();
+        document.getElementById('lastUpdateTime').textContent =
+            now.toLocaleDateString('es-ES', { day:'numeric', month:'short' }) +
+            ' · ' + now.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function updateCounts() {
+        ['all','noticia','oficial','rumor','informacion','curiosidades','ediciones','review','mapas','clases','armas','modos','warzone','skins'].forEach(cat => {
+            const el = document.getElementById('count-' + cat);
+            if (!el) return;
+            const n = cat === 'all' ? allPosts.length : allPosts.filter(p => p.tag === cat).length;
+            el.textContent = n;
+            el.style.display = n === 0 ? 'none' : '';
+        });
+    }
+
+    function formatDate(ds) {
+        const date = new Date(ds), diff = Math.floor((Date.now() - date) / 86400000);
+        if (diff === 0) return 'Hoy'; if (diff === 1) return 'Ayer'; if (diff < 7) return `Hace ${diff} días`;
+        return date.toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' });
+    }
+    function isNew(ds) { return (Date.now() - new Date(ds)) < 86400000; }
+    function truncateText(text, max = 80) {
+        if (!text) return ''; const clean = text.replace(/<[^>]*>/g,'');
+        return clean.length <= max ? clean : clean.substring(0, max) + '...';
+    }
+    function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+    function showPostDetail(id) { window.location.href = `post.html?id=${id}`; }
+
+    function renderSkeletons(n = 8) {
+        return Array.from({length:n}, () => `<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line s"></div><div class="skeleton-line t"></div><div class="skeleton-line m"></div><div class="skeleton-line f"></div><div class="skeleton-line m"></div></div></div>`).join('');
+    }
+
+    function sharePost(e, postId, title) {
+        e.stopPropagation();
+        const url = `${location.origin}${location.pathname}post.html?id=${postId}`;
+        const btn = e.currentTarget;
+        if (navigator.share) { navigator.share({ title, url }).catch(()=>{}); }
+        else {
+            navigator.clipboard.writeText(url).then(() => {
+                btn.classList.add('copied'); btn.innerHTML = '<i class="fas fa-check"></i> Copiado';
+                setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<i class="fas fa-link"></i> Copiar enlace'; }, 2000);
+            });
         }
     }
 
+    const TAG_CLASS = {'oficial':'tag-oficial','noticia':'tag-noticia','rumor':'tag-rumor','review':'tag-review','mapas':'tag-mapas','clases':'tag-clases','armas':'tag-armas','modos':'tag-modos','warzone':'tag-warzone','dmz':'tag-dmz','campana':'tag-campana','skins':'tag-skins','informacion':'tag-informacion','curiosidades':'tag-curiosidades','ediciones':'tag-ediciones'};
+    const TAG_ICON  = {'oficial':'✓','noticia':'📰','rumor':'🔮','review':'⭐','mapas':'🗺️','clases':'🎖️','armas':'🔫','modos':'🎮','warzone':'🪂','dmz':'🏴','campana':'⚔️','skins':'🎨','informacion':'📡','curiosidades':'🧠','ediciones':'💎'};
+
     function getFilteredPosts() {
-        if (currentFilter === 'all') return allPosts;
-        return allPosts.filter(post => post.tag === currentFilter);
-    }
-
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const ahora = new Date();
-        const diff = Math.floor((ahora - date) / (1000 * 60 * 60 * 24));
-        
-        if (diff === 0) return 'Hoy';
-        if (diff === 1) return 'Ayer';
-        if (diff < 7) return `Hace ${diff} días`;
-        return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
-    }
-
-    function truncateText(text, maxLength = 80) {
-        if (!text) return '';
-        const cleanText = text.replace(/<[^>]*>/g, '');
-        if (cleanText.length <= maxLength) return cleanText;
-        return cleanText.substring(0, maxLength) + '...';
-    }
-
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function showPostDetail(postId) {
-        window.location.href = `post.html?id=${postId}`;
+        let posts = currentFilter === 'all' ? allPosts : allPosts.filter(p => p.tag === currentFilter);
+        if (searchQuery) { const q = searchQuery.toLowerCase(); posts = posts.filter(p => (p.title||'').toLowerCase().includes(q)||(p.excerpt||'').toLowerCase().includes(q)||(p.content||'').toLowerCase().includes(q)); }
+        return posts;
     }
 
     function renderPosts() {
         const grid = document.getElementById('newsGrid');
-        const filtered = getFilteredPosts();
-        const postsToShow = filtered.slice(0, visiblePosts);
-        
-        if (postsToShow.length === 0 && filtered.length === 0) {
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem;"><i class="fas fa-skull"></i> No hay noticias aún.</div>';
-            document.getElementById('loadMoreBtn').style.display = 'none';
-            return;
+        const filtered = getFilteredPosts(), postsToShow = filtered.slice(0, visiblePosts);
+        if (postsToShow.length === 0) {
+            const msg = searchQuery ? `<i class="fas fa-search"></i> Sin resultados para "<strong>${escapeHtml(searchQuery)}</strong>"` : (currentFilter !== 'all' ? '<i class="fas fa-filter"></i> No hay noticias con este filtro' : '<i class="fas fa-skull"></i> No hay noticias aún.');
+            grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;">${msg}</div>`;
+            document.getElementById('loadMoreBtn').style.display = 'none'; return;
         }
-        
-        if (postsToShow.length === 0 && filtered.length > 0) {
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem;"><i class="fas fa-filter"></i> No hay noticias con este filtro</div>';
-            document.getElementById('loadMoreBtn').style.display = 'none';
-            return;
-        }
-        
-        grid.innerHTML = postsToShow.map((post, index) => {
-            const tagClass = {
-                'oficial':      'tag-oficial',
-                'noticia':      'tag-noticia',
-                'rumor':        'tag-rumor',
-                'review':       'tag-review',
-                'mapas':        'tag-mapas',
-                'clases':       'tag-clases',
-                'armas':        'tag-armas',
-                'modos':        'tag-modos',
-                'warzone':      'tag-warzone',
-                'dmz':          'tag-dmz',
-                'campana':      'tag-campana',
-                'skins':        'tag-skins',
-                'informacion':  'tag-informacion',
-                'curiosidades': 'tag-curiosidades',
-                'ediciones':    'tag-ediciones'
-            }[post.tag] || 'tag-noticia';
-            
-            const tagIcon = {
-                'oficial':      '✓',
-                'noticia':      '📰',
-                'rumor':        '🔮',
-                'review':       '⭐',
-                'mapas':        '🗺️',
-                'clases':       '🎖️',
-                'armas':        '🔫',
-                'modos':        '🎮',
-                'warzone':      '🪂',
-                'dmz':          '🏴',
-                'campana':      '⚔️',
-                'skins':        '🎨',
-                'informacion':  '📡',
-                'curiosidades': '🧠',
-                'ediciones':    '💎'
-            }[post.tag] || '📰';
-
-            const updatedBadge = post.updated
-                ? `<div class="updated-badge">🔄 Actualizado</div>`
-                : '';
-            
-            return `
-                <div class="news-card" data-id="${post.id}" style="animation-delay: ${index * 0.05}s">
-                    <div class="image-container">
-                        ${updatedBadge}
-                        <img class="card-image" src="${post.image || 'https://via.placeholder.com/400x180/1a1a1a/4caf50?text=MW4'}" alt="${escapeHtml(post.title)}" loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/400x180/1a1a1a/4caf50?text=MW4'">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-tag ${tagClass}">${tagIcon} ${post.tag.toUpperCase()}</span>
-                        <h3 class="card-title">${escapeHtml(post.title)}</h3>
-                        <div class="card-date"><i class="far fa-calendar-alt"></i> ${formatDate(post.date)}</div>
-                        <p class="card-excerpt">${escapeHtml(truncateText(post.excerpt || post.content, 80))}</p>
+        grid.innerHTML = postsToShow.map((post, i) => {
+            const tc = TAG_CLASS[post.tag]||'tag-noticia', ti = TAG_ICON[post.tag]||'📰';
+            const updBadge = post.updated ? `<div class="updated-badge">🔄 Actualizado</div>` : '';
+            const newBadge = isNew(post.date) ? `<div class="new-badge">NUEVO</div>` : '';
+            return `<div class="news-card" data-id="${post.id}" style="animation-delay:${i*0.05}s">
+                <div class="image-container">${updBadge}${newBadge}
+                    <img class="card-image" src="${post.image||'https://via.placeholder.com/400x180/1a1a1a/4caf50?text=MW4'}" alt="${escapeHtml(post.title)}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x180/1a1a1a/4caf50?text=MW4'">
+                </div>
+                <div class="card-content">
+                    <span class="card-tag ${tc}">${ti} ${post.tag.toUpperCase()}</span>
+                    <h3 class="card-title">${escapeHtml(post.title)}</h3>
+                    <div class="card-date"><i class="far fa-calendar-alt"></i> ${formatDate(post.date)}</div>
+                    <p class="card-excerpt">${escapeHtml(truncateText(post.excerpt||post.content,80))}</p>
+                    <div class="card-share">
+                        <button class="share-btn" data-id="${post.id}" data-title="${escapeHtml(post.title)}"><i class="fas fa-link"></i> Copiar enlace</button>
                     </div>
                 </div>
-            `;
+            </div>`;
         }).join('');
-        
-        document.querySelectorAll('.news-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const postId = parseInt(card.dataset.id);
-                showPostDetail(postId);
-            });
-        });
-        
-        const loadBtn = document.getElementById('loadMoreBtn');
-        if (visiblePosts >= filtered.length) {
-            loadBtn.style.display = 'none';
-        } else {
-            loadBtn.style.display = 'block';
+        grid.querySelectorAll('.news-card').forEach(c => c.addEventListener('click', () => showPostDetail(parseInt(c.dataset.id))));
+        grid.querySelectorAll('.share-btn').forEach(b => b.addEventListener('click', e => sharePost(e, b.dataset.id, b.dataset.title)));
+        document.getElementById('loadMoreBtn').style.display = visiblePosts >= filtered.length ? 'none' : 'block';
+    }
+
+    async function loadPosts() {
+        document.getElementById('newsGrid').innerHTML = renderSkeletons(8);
+        try {
+            const r = await fetch(POSTS_URL + '?t=' + Date.now());
+            if (!r.ok) throw new Error();
+            allPosts = await r.json();
+            updateCounts(); updateLastUpdateTime(); renderPosts();
+        } catch {
+            document.getElementById('newsGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;"><i class="fas fa-exclamation-triangle"></i> Error cargando noticias.</div>';
+            document.getElementById('loadMoreBtn').style.display = 'none';
         }
     }
 
-    document.getElementById('loadMoreBtn').addEventListener('click', () => {
-        visiblePosts += 4;
-        renderPosts();
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active'); currentFilter = btn.dataset.filter; visiblePosts = 8; renderPosts();
+    }));
+    document.getElementById('loadMoreBtn').addEventListener('click', () => { visiblePosts += 4; renderPosts(); });
+
+    const filterToggle = document.getElementById('filterToggle');
+    const filtersContainer = document.getElementById('filtersContainer');
+    filterToggle.addEventListener('click', () => {
+        const open = filtersContainer.classList.toggle('open');
+        filterToggle.classList.toggle('open', open);
     });
 
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            visiblePosts = 8;
-            renderPosts();
-        });
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    searchInput.addEventListener('input', () => {
+        searchQuery = searchInput.value.trim();
+        searchClear.classList.toggle('visible', searchQuery.length > 0);
+        visiblePosts = 8; renderPosts();
     });
+    searchClear.addEventListener('click', () => {
+        searchInput.value = ''; searchQuery = ''; searchClear.classList.remove('visible'); visiblePosts = 8; renderPosts();
+    });
+
+    const scrollTopBtn = document.getElementById('scrollTop');
+    window.addEventListener('scroll', () => scrollTopBtn.classList.toggle('visible', window.scrollY > 400), { passive: true });
+    scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
     loadPosts();
 </script>
-
 </body>
 </html>
