@@ -1,11 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" type="image/png" href="favicon.ico">
-    <link rel="apple-touch-icon" href="favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>MW4 News - Modern Warfare 4 2026</title>
+    <title>MW4 News - Noticias Modern Warfare 4 2026</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Todas las noticias, rumores, mapas, armas y novedades de Modern Warfare 4 (2026). El portal en español más actualizado sobre MW4.">
+    <meta name="keywords" content="Modern Warfare 4, MW4, Call of Duty 2026, noticias MW4, novedades, mapas, armas, Warzone">
+    <meta name="author" content="MW4 News · @MW4esp">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dastanfc.github.io/MW4/">
+
+    <!-- Open Graph (WhatsApp, Facebook, Discord) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MW4 News">
+    <meta property="og:title" content="MW4 News - Noticias Modern Warfare 4 2026">
+    <meta property="og:description" content="Todas las noticias, rumores y novedades de Modern Warfare 4 en español. Actualizado a diario.">
+    <meta property="og:url" content="https://dastanfc.github.io/MW4/">
+    <meta property="og:image" content="https://dastanfc.github.io/MW4/favicon.png">
+    <meta property="og:locale" content="es_ES">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@MW4esp">
+    <meta name="twitter:creator" content="@MW4esp">
+    <meta name="twitter:title" content="MW4 News - Noticias Modern Warfare 4 2026">
+    <meta name="twitter:description" content="Todas las noticias, rumores y novedades de Modern Warfare 4 en español. Actualizado a diario.">
+    <meta name="twitter:image" content="https://dastanfc.github.io/MW4/favicon.png">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
+
+    <title>MW4 News - Noticias Modern Warfare 4 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -27,16 +58,26 @@
             border-bottom: 3px solid #4caf50;
         }
         .header-inner {
-            display: flex; align-items: flex-start; justify-content: center;
-            position: relative; max-width: 1400px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1400px; margin: 0 auto; gap: 1rem;
         }
-        .logo-container { text-align: center; }
+        .logo-container { text-align: left; flex: 1; }
         .logo { font-size: 3rem; font-weight: 900; letter-spacing: 5px; color: #fff; animation: glowPulse 2s ease-in-out infinite; }
         .logo span { color: #4caf50; font-size: 3.5rem; }
         .logo a { text-decoration: none; color: inherit; }
         .tagline { color: #4caf50; font-weight: 700; letter-spacing: 3px; margin-top: 0.5rem; font-size: 0.8rem; }
-        .last-update { position: absolute; right: 0; top: 0; font-size: 0.62rem; color: #555; text-align: right; line-height: 1.6; }
+        .header-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; flex-shrink: 0; }
+        .twitter-btn {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            background: #000; border: 1px solid #333; color: #fff;
+            padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.68rem;
+            font-weight: 700; text-decoration: none; transition: all 0.2s; white-space: nowrap;
+        }
+        .twitter-btn:hover { background: #1a1a1a; border-color: #fff; }
+        .last-update { font-size: 0.62rem; color: #555; text-align: right; line-height: 1.6; }
         .last-update span { display: block; color: #4caf50; font-weight: 700; font-size: 0.68rem; }
+        .news-counter { font-size: 0.62rem; color: #555; text-align: right; }
+        .news-counter strong { color: #4caf50; font-weight: 700; }
 
         .filters-wrapper {
             background: rgba(15,15,15,0.97); backdrop-filter: blur(10px);
@@ -124,7 +165,7 @@
         .card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; color: #fff; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
         .card-date { font-size: 0.6rem; color: #4caf50; margin-bottom: 0.4rem; }
         .card-excerpt { font-size: 0.72rem; color: #aaa; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.7rem; }
-        .card-share { display: flex; align-items: center; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid rgba(76,175,80,0.12); }
+        .card-share { display: flex; align-items: center; gap: 0.4rem; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid rgba(76,175,80,0.12); flex-wrap: wrap; }
         .share-btn {
             background: none; border: 1px solid rgba(76,175,80,0.3); color: #666; border-radius: 4px;
             padding: 0.2rem 0.6rem; font-size: 0.58rem; cursor: pointer; font-family: 'Roboto', sans-serif;
@@ -132,6 +173,12 @@
         }
         .share-btn:hover { border-color: #4caf50; color: #4caf50; }
         .share-btn.copied { border-color: #4caf50; color: #4caf50; background: rgba(76,175,80,0.1); }
+        .twitter-share-btn {
+            background: none; border: 1px solid rgba(255,255,255,0.1); color: #666; border-radius: 4px;
+            padding: 0.2rem 0.6rem; font-size: 0.58rem; cursor: pointer; font-family: 'Roboto', sans-serif;
+            font-weight: 700; transition: all 0.2s; display: flex; align-items: center; gap: 4px;
+        }
+        .twitter-share-btn:hover { border-color: #fff; color: #fff; }
 
         .load-more {
             display: block; margin: 1rem auto 3rem; background: transparent; border: 2px solid #4caf50;
@@ -162,14 +209,103 @@
             .tagline { font-size:0.6rem; letter-spacing:1px; }
             .card-title { font-size:0.9rem; } .card-excerpt { font-size:0.7rem; }
             header { padding:1.5rem 1rem 1.2rem; } .image-container { height:160px; }
-            .last-update { font-size:0.55rem; position: static; text-align: center; margin-top: 0.5rem; }
             .header-inner { flex-direction: column; align-items: center; }
+            .logo-container { text-align: center; }
+            .header-meta { align-items: center; flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 0.6rem; }
+            .last-update { text-align: center; font-size:0.55rem; }
+            .news-counter { text-align: center; }
             .filter-toggle { border-bottom:1px solid rgba(76,175,80,0.1); }
             .filters { padding: 0 1rem; }
             .filters.open { padding: 0.6rem 1rem 0.8rem; }
             .search-bar { padding:0.6rem 1rem 0; }
         }
         @media (max-width:480px) { .news-grid { gap:0.8rem; } .card-content { padding:0.7rem; } }
+
+        /* ===== BANNER ===== */
+        .site-banner {
+            width: 100%;
+            max-width: 1400px;
+            margin: 1.5rem auto 0;
+            padding: 0 1.5rem;
+        }
+        .site-banner a { display: block; border-radius: 10px; overflow: hidden; line-height: 0; }
+        .site-banner img {
+            width: 100%;
+            height: auto;
+            max-height: 260px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            border-radius: 10px;
+            border: 1px solid rgba(76,175,80,0.25);
+            transition: opacity 0.2s;
+        }
+        .site-banner a:hover img { opacity: 0.9; }
+        @media (max-width: 600px) {
+            .site-banner { padding: 0 0.75rem; margin-top: 1rem; }
+            .site-banner img { max-height: 120px; border-radius: 7px; }
+        }
+
+        /* ===== ÚLTIMA HORA ===== */
+        .breaking-bar {
+            background: #e53935;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            overflow: hidden;
+            border-bottom: 2px solid #b71c1c;
+            position: relative;
+            z-index: 5;
+        }
+        .breaking-label {
+            background: #b71c1c;
+            padding: 0.45rem 1rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .breaking-scroll-wrap {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+        }
+        .breaking-ticker {
+            display: flex;
+            white-space: nowrap;
+            animation: breakingScroll 28s linear infinite;
+            padding: 0.45rem 0;
+        }
+        .breaking-ticker:hover { animation-play-state: paused; }
+        .breaking-item {
+            padding: 0 2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: inline-block;
+        }
+        .breaking-item::after {
+            content: '·';
+            margin-left: 2rem;
+            opacity: 0.5;
+        }
+        .breaking-item:last-child::after { display: none; }
+        .breaking-item:hover { color: #ffcdd2; }
+        @keyframes breakingScroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @media (max-width: 600px) {
+            .breaking-label { padding: 0.4rem 0.6rem; font-size: 0.62rem; letter-spacing: 1px; }
+            .breaking-ticker { font-size: 0.65rem; }
+        }
     </style>
 </head>
 <body>
@@ -180,14 +316,41 @@
             <h1 class="logo"><a href="index.html">MODERN WARFARE <span>4</span></a></h1>
             <p class="tagline">2026 • NOTICIAS OFICIALES</p>
         </div>
-        <div class="last-update" id="lastUpdate">
-            <i class="far fa-clock"></i> Última actualización<br>
-            <span id="lastUpdateTime">—</span>
+        <div class="header-meta">
+            <a class="twitter-btn" href="https://twitter.com/MW4esp" target="_blank" rel="noopener">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                @MW4esp
+            </a>
+            <div class="last-update" id="lastUpdate">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Última actualización<br>
+                <span id="lastUpdateTime">—</span>
+            </div>
+            <div class="news-counter">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><path d="M4 6h16M4 10h16M4 14h10"/></svg>
+                <strong id="totalCount">0</strong> noticias publicadas
+            </div>
         </div>
     </div>
 </header>
 
 <main>
+
+    <!-- ===== BANNER (reemplaza src con tu imagen 1500x500) ===== -->
+    <div class="site-banner" id="siteBannerWrapper" style="display:none">
+        <a href="#" id="bannerLink" target="_blank" rel="noopener">
+            <img id="bannerImg" src="" alt="Modern Warfare 4 – Banner">
+        </a>
+    </div>
+
+    <!-- ===== ÚLTIMA HORA ===== -->
+    <div class="breaking-bar" id="breakingBar" style="display:none">
+        <div class="breaking-label">🔴 ÚLTIMA HORA</div>
+        <div class="breaking-scroll-wrap">
+            <div class="breaking-ticker" id="breakingTicker"></div>
+        </div>
+    </div>
+
     <div class="filters-wrapper">
         <div class="search-bar">
             <i class="fas fa-search search-icon"></i>
@@ -222,6 +385,12 @@
 
 <footer>
     <p>Modern Warfare 4 © 2026 - Fan Blog no oficial | <i class="fas fa-skull"></i> Task Force 141</p>
+    <p style="margin-top:0.5rem;">
+        <a href="https://twitter.com/MW4esp" target="_blank" rel="noopener" style="color:#4caf50;text-decoration:none;font-weight:700;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:3px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg>
+            @MW4esp
+        </a>
+    </p>
 </footer>
 
 <button class="scroll-top" id="scrollTop" title="Volver arriba">
@@ -247,6 +416,8 @@
             el.textContent = n;
             el.style.display = n === 0 ? 'none' : '';
         });
+        const tc = document.getElementById('totalCount');
+        if (tc) tc.textContent = allPosts.length;
     }
 
     function formatDate(ds) {
@@ -264,6 +435,13 @@
 
     function renderSkeletons(n = 8) {
         return Array.from({length:n}, () => `<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line s"></div><div class="skeleton-line t"></div><div class="skeleton-line m"></div><div class="skeleton-line f"></div><div class="skeleton-line m"></div></div></div>`).join('');
+    }
+
+    function shareTwitter(e, postId, title) {
+        e.stopPropagation();
+        const url = `${location.origin}${location.pathname}post.html?id=${postId}`;
+        const text = encodeURIComponent(`${title} #MW4 #ModernWarfare4`);
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}&via=MW4esp`, '_blank', 'noopener');
     }
 
     function sharePost(e, postId, title) {
@@ -310,13 +488,15 @@
                     <div class="card-date"><i class="far fa-calendar-alt"></i> ${formatDate(post.date)}</div>
                     <p class="card-excerpt">${escapeHtml(truncateText(post.excerpt||post.content,80))}</p>
                     <div class="card-share">
-                        <button class="share-btn" data-id="${post.id}" data-title="${escapeHtml(post.title)}"><i class="fas fa-link"></i> Copiar enlace</button>
+                        <button class="share-btn" data-id="${post.id}" data-title="${escapeHtml(post.title)}"><i class="fas fa-link"></i> Copiar</button>
+                        <button class="twitter-share-btn" data-id="${post.id}" data-title="${escapeHtml(post.title)}"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg> Twittear</button>
                     </div>
                 </div>
             </div>`;
         }).join('');
         grid.querySelectorAll('.news-card').forEach(c => c.addEventListener('click', () => showPostDetail(parseInt(c.dataset.id))));
         grid.querySelectorAll('.share-btn').forEach(b => b.addEventListener('click', e => sharePost(e, b.dataset.id, b.dataset.title)));
+        grid.querySelectorAll('.twitter-share-btn').forEach(b => b.addEventListener('click', e => shareTwitter(e, b.dataset.id, b.dataset.title)));
         document.getElementById('loadMoreBtn').style.display = visiblePosts >= filtered.length ? 'none' : 'block';
     }
 
@@ -326,7 +506,7 @@
             const r = await fetch(POSTS_URL + '?t=' + Date.now());
             if (!r.ok) throw new Error();
             allPosts = await r.json();
-            updateCounts(); updateLastUpdateTime(); renderPosts();
+            updateCounts(); updateLastUpdateTime(); renderPosts(); initBreakingNews();
         } catch {
             document.getElementById('newsGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;"><i class="fas fa-exclamation-triangle"></i> Error cargando noticias.</div>';
             document.getElementById('loadMoreBtn').style.display = 'none';
@@ -360,6 +540,45 @@
     const scrollTopBtn = document.getElementById('scrollTop');
     window.addEventListener('scroll', () => scrollTopBtn.classList.toggle('visible', window.scrollY > 400), { passive: true });
     scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // ===== BANNER CONFIG =====
+    // Para activar el banner: pon la URL de tu imagen y (opcional) enlace de destino
+    const BANNER_CONFIG = {
+        enabled: true,           // ← cambia a true para mostrar el banner
+        image: 'https://i.imgur.com/2w5hpc7.png',                // ← URL de tu imagen 1500x500 (ej: 'https://i.imgur.com/2w5hpc7.png')
+        link: 'https://dastanfc.github.io/MW4/',                // ← URL a la que lleva al hacer clic (o '#' para ninguno)
+        openInNewTab: true
+    };
+    function initBanner() {
+        if (!BANNER_CONFIG.enabled || !BANNER_CONFIG.image) return;
+        const wrapper = document.getElementById('siteBannerWrapper');
+        const img     = document.getElementById('bannerImg');
+        const link    = document.getElementById('bannerLink');
+        img.src = BANNER_CONFIG.image;
+        link.href = BANNER_CONFIG.link;
+        if (!BANNER_CONFIG.openInNewTab) link.removeAttribute('target');
+        if (BANNER_CONFIG.link === '#') link.style.cursor = 'default';
+        wrapper.style.display = '';
+    }
+    initBanner();
+
+    // ===== ÚLTIMA HORA =====
+    function initBreakingNews() {
+        // Muestra los posts de las últimas 12 horas
+        const recent = allPosts.filter(p => (Date.now() - new Date(p.date)) < 43200000);
+        if (recent.length === 0) return;
+        const bar    = document.getElementById('breakingBar');
+        const ticker = document.getElementById('breakingTicker');
+        // Duplicamos para bucle continuo sin saltos
+        const items  = [...recent, ...recent].map(p =>
+            `<span class="breaking-item" data-id="${p.id}">${p.title}</span>`
+        ).join('');
+        ticker.innerHTML = items;
+        ticker.querySelectorAll('.breaking-item').forEach(el =>
+            el.addEventListener('click', () => showPostDetail(parseInt(el.dataset.id)))
+        );
+        bar.style.display = '';
+    }
 
     loadPosts();
 </script>
