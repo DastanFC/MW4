@@ -57,11 +57,12 @@
             padding: 2.2rem 2rem 1.8rem;
             border-bottom: 3px solid #4caf50;
         }
-        .header-inner {
-            display: flex; align-items: center; justify-content: space-between;
-            max-width: 1400px; margin: 0 auto; gap: 1rem;
-        }
-        .logo-container { text-align: left; flex: 1; }
+.header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1400px; margin: 0 auto; gap: 1rem;
+    position: relative;
+}
+.logo-container { text-align: center; flex: 1; position: absolute; left: 50%; transform: translateX(-50%); }
         .logo { font-size: 3rem; font-weight: 900; letter-spacing: 5px; color: #fff; animation: glowPulse 2s ease-in-out infinite; }
         .logo span { color: #4caf50; font-size: 3.5rem; }
         .logo a { text-decoration: none; color: inherit; }
