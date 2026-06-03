@@ -55,14 +55,16 @@
         .search-clear.visible { display: block; color: #4caf50; }
 
         .filter-toggle {
-            display: none; width: 100%; background: none; border: none; color: #4caf50;
+            display: flex; width: 100%; background: none; border: none; color: #4caf50;
             font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 1px;
             padding: 0.55rem 1.5rem; cursor: pointer; text-align: left; align-items: center; gap: 0.4rem;
+            border-bottom: 1px solid rgba(76,175,80,0.1);
         }
         .filter-toggle .chev { margin-left: auto; transition: transform 0.3s; }
         .filter-toggle.open .chev { transform: rotate(180deg); }
 
-        .filters { display: flex; justify-content: center; gap: 0.45rem; flex-wrap: wrap; padding: 0.75rem 1.5rem 0.9rem; }
+        .filters { display: flex; justify-content: center; gap: 0.45rem; flex-wrap: wrap; max-height: 0; overflow: hidden; padding: 0 1.5rem; transition: max-height 0.35s ease, padding 0.35s ease; }
+        .filters.open { max-height: 400px; padding: 0.75rem 1.5rem 0.9rem; }
         .filter-btn {
             background: transparent; border: 1px solid rgba(76,175,80,0.4); color: #888;
             padding: 0.25rem 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease;
@@ -162,9 +164,9 @@
             header { padding:1.5rem 1rem 1.2rem; } .image-container { height:160px; }
             .last-update { font-size:0.55rem; position: static; text-align: center; margin-top: 0.5rem; }
             .header-inner { flex-direction: column; align-items: center; }
-            .filter-toggle { display:flex; border-bottom:1px solid rgba(76,175,80,0.1); }
-            .filters { max-height:0; overflow:hidden; padding:0 1rem; transition:max-height 0.35s ease,padding 0.35s ease; }
-            .filters.open { max-height:400px; padding:0.6rem 1rem 0.8rem; }
+            .filter-toggle { border-bottom:1px solid rgba(76,175,80,0.1); }
+            .filters { padding: 0 1rem; }
+            .filters.open { padding: 0.6rem 1rem 0.8rem; }
             .search-bar { padding:0.6rem 1rem 0; }
         }
         @media (max-width:480px) { .news-grid { gap:0.8rem; } .card-content { padding:0.7rem; } }
