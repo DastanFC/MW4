@@ -181,24 +181,6 @@
         }
         .twitter-share-btn:hover { border-color: #fff; color: #fff; }
 
-        /* Contador de comentarios Disqus */
-        .card-comment-count {
-            margin-left: auto;
-            color: #555;
-            font-size: 0.58rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            white-space: nowrap;
-            transition: color 0.2s;
-        }
-        .news-card:hover .card-comment-count { color: #4caf50; }
-        .card-comment-count a {
-            color: inherit;
-            text-decoration: none;
-        }
-
         .load-more {
             display: block; margin: 1rem auto 3rem; background: transparent; border: 2px solid #4caf50;
             color: #4caf50; padding: 0.7rem 2rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
@@ -281,64 +263,87 @@
         }
 
         /* ===== ÚLTIMA HORA ===== */
+        @keyframes breakingFade {
+            0%   { opacity: 0; transform: translateY(4px); }
+            10%  { opacity: 1; transform: translateY(0); }
+            80%  { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-4px); }
+        }
+        @keyframes breakingPulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
         .breaking-bar {
             background: #e53935;
             color: #fff;
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 1px;
             display: flex;
             align-items: center;
-            gap: 0;
+            justify-content: center;
+            gap: 1rem;
             overflow: hidden;
             border-bottom: 2px solid #b71c1c;
             position: relative;
             z-index: 5;
+            padding: 0.5rem 1.5rem;
+            min-height: 36px;
         }
         .breaking-label {
             background: #b71c1c;
-            padding: 0.45rem 1rem;
+            padding: 0.3rem 0.8rem;
             white-space: nowrap;
             flex-shrink: 0;
             text-transform: uppercase;
             letter-spacing: 2px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             gap: 0.4rem;
+            font-size: 0.65rem;
+        }
+        .breaking-label .dot {
+            width: 7px; height: 7px;
+            background: #fff;
+            border-radius: 50%;
+            animation: breakingPulse 1.2s ease-in-out infinite;
+            flex-shrink: 0;
         }
         .breaking-scroll-wrap {
             flex: 1;
             overflow: hidden;
             position: relative;
-            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
         }
         .breaking-ticker {
-            display: flex;
-            white-space: nowrap;
-            animation: breakingScroll 28s linear infinite;
-            padding: 0.45rem 0;
+            position: relative;
+            width: 100%;
+            text-align: center;
         }
-        .breaking-ticker:hover { animation-play-state: paused; }
         .breaking-item {
-            padding: 0 2rem;
+            position: absolute;
+            left: 0; right: 0;
+            text-align: center;
             cursor: pointer;
+            padding: 0 1rem;
+            opacity: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             transition: color 0.2s;
-            display: inline-block;
         }
-        .breaking-item::after {
-            content: '·';
-            margin-left: 2rem;
-            opacity: 0.5;
+        .breaking-item.active {
+            animation: breakingFade 4s ease-in-out forwards;
         }
-        .breaking-item:last-child::after { display: none; }
         .breaking-item:hover { color: #ffcdd2; }
-        @keyframes breakingScroll {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
         @media (max-width: 600px) {
-            .breaking-label { padding: 0.4rem 0.6rem; font-size: 0.62rem; letter-spacing: 1px; }
-            .breaking-ticker { font-size: 0.65rem; }
+            .breaking-bar { gap: 0.6rem; padding: 0.45rem 0.75rem; }
+            .breaking-label { padding: 0.25rem 0.5rem; font-size: 0.58rem; letter-spacing: 1px; }
+            .breaking-item { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -379,7 +384,7 @@
 
     <!-- ===== ÚLTIMA HORA ===== -->
     <div class="breaking-bar" id="breakingBar" style="display:none">
-        <div class="breaking-label">🔴 ÚLTIMA HORA</div>
+        <div class="breaking-label"><span class="dot"></span> ÚLTIMA HORA</div>
         <div class="breaking-scroll-wrap">
             <div class="breaking-ticker" id="breakingTicker"></div>
         </div>
@@ -524,7 +529,6 @@
                     <div class="card-share">
                         <button class="share-btn" data-id="${post.id}" data-title="${escapeHtml(post.title)}"><i class="fas fa-link"></i> Copiar</button>
                         <button class="twitter-share-btn" data-id="${post.id}" data-title="${escapeHtml(post.title)}"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg> Twittear</button>
-                        <span class="card-comment-count"><a href="post.html?id=${post.id}#disqus_thread" data-disqus-identifier="post.html?id=${post.id}">💬</a></span>
                     </div>
                 </div>
             </div>`;
@@ -599,26 +603,48 @@
 
     // ===== ÚLTIMA HORA =====
     function initBreakingNews() {
-        // Muestra los posts de las últimas 12 horas
         const recent = allPosts.filter(p => (Date.now() - new Date(p.date)) < 43200000);
         if (recent.length === 0) return;
+
         const bar    = document.getElementById('breakingBar');
         const ticker = document.getElementById('breakingTicker');
-        // Duplicamos para bucle continuo sin saltos
-        const items  = [...recent, ...recent].map(p =>
+
+        // Altura fija para el wrap basada en el font-size
+        ticker.style.height = '22px';
+
+        // Crear un item por cada post reciente
+        ticker.innerHTML = recent.map((p, i) =>
             `<span class="breaking-item" data-id="${p.id}">${p.title}</span>`
         ).join('');
-        ticker.innerHTML = items;
-        ticker.querySelectorAll('.breaking-item').forEach(el =>
+
+        const items = ticker.querySelectorAll('.breaking-item');
+        items.forEach(el =>
             el.addEventListener('click', () => showPostDetail(parseInt(el.dataset.id)))
         );
+
         bar.style.display = '';
+
+        let current = 0;
+        function showNext() {
+            // Quitar clase active del anterior
+            items.forEach(el => {
+                el.classList.remove('active');
+                el.style.animation = 'none';
+                // forzar reflow para reiniciar animación
+                void el.offsetWidth;
+            });
+            const el = items[current];
+            el.style.animation = '';
+            el.classList.add('active');
+            current = (current + 1) % items.length;
+        }
+
+        showNext();
+        // Cada 4s coincide con la duración de breakingFade
+        setInterval(showNext, 4000);
     }
 
     loadPosts();
 </script>
-<!-- ===== DISQUS CONTADOR DE COMENTARIOS ===== -->
-<script id="dsq-count-scr" src="//mw4.disqus.com/count.js" async></script>
-
 </body>
 </html>
