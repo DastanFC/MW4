@@ -167,6 +167,49 @@
         .card-date { font-size: 0.6rem; color: #4caf50; margin-bottom: 0.4rem; }
         .card-excerpt { font-size: 0.72rem; color: #aaa; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.7rem; }
         .card-share { display: flex; align-items: center; gap: 0.4rem; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid rgba(76,175,80,0.12); flex-wrap: wrap; }
+
+        /* ===== FLASH CARD ===== */
+        .news-card.flash-card { border-color: rgba(255,214,0,0.35); min-height: 320px; }
+        .news-card.flash-card:hover { border-color: #ffd600; box-shadow: 0 10px 25px rgba(255,214,0,0.18); }
+        .flash-card .image-container { display: none; }
+        .flash-card .flash-body {
+            display: flex; flex-direction: column; flex: 1;
+            padding: 1rem; height: 100%;
+        }
+        .flash-header {
+            display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;
+        }
+        .flash-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #1a2a1a; border: 2px solid rgba(76,175,80,0.5);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+        .flash-account { flex: 1; min-width: 0; }
+        .flash-account-name { font-size: 0.8rem; font-weight: 700; color: #fff; line-height: 1.2; }
+        .flash-account-handle { font-size: 0.62rem; color: #666; }
+        .flash-badge {
+            background: #ffd600; color: #000; font-size: 0.55rem; font-weight: 900;
+            letter-spacing: 1.5px; padding: 3px 8px; border-radius: 4px; white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .flash-text {
+            font-size: 0.82rem; color: #ddd; line-height: 1.55; flex: 1;
+            word-break: break-word; margin-bottom: 0.6rem;
+        }
+        .flash-text .flash-highlight { color: #4caf50; font-weight: 700; }
+        .flash-opt-img {
+            width: 100%; border-radius: 8px; object-fit: cover;
+            max-height: 110px; display: block; margin-bottom: 0.6rem;
+        }
+        .flash-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-top: auto; padding-top: 0.5rem;
+            border-top: 1px solid rgba(76,175,80,0.12);
+            flex-wrap: wrap; gap: 0.3rem;
+        }
+        .flash-footer-left { display: flex; align-items: center; gap: 0.4rem; }
+        .flash-footer-right { display: flex; align-items: center; gap: 0.4rem; }
         .share-btn {
             background: none; border: 1px solid rgba(76,175,80,0.3); color: #666; border-radius: 4px;
             padding: 0.2rem 0.6rem; font-size: 0.58rem; cursor: pointer; font-family: 'Roboto', sans-serif;
@@ -517,6 +560,37 @@
             const tc = TAG_CLASS[post.tag]||'tag-noticia', ti = TAG_ICON[post.tag]||'📰';
             const updBadge = post.updated ? `<div class="updated-badge">🔄 Actualizado</div>` : '';
             const newBadge = isNew(post.date) ? `<div class="new-badge">NUEVO</div>` : '';
+
+            if (post.flash) {
+                const optImg = post.image ? `<img class="flash-opt-img" src="${escapeHtml(post.image)}" alt="" loading="lazy" onerror="this.style.display='none'">` : '';
+                const flashContent = (post.content||post.excerpt||'').replace(/<[^>]*>/g,'');
+                return `<div class="news-card flash-card" data-id="${post.id}" style="animation-delay:${i*0.05}s">
+                    <div class="image-container"></div>
+                    <div class="flash-body">
+                        <div class="flash-header">
+                            <div class="flash-avatar">🎮</div>
+                            <div class="flash-account">
+                                <div class="flash-account-name">MW4 News</div>
+                                <div class="flash-account-handle">@MW4esp</div>
+                            </div>
+                            <div class="flash-badge">⚡ FLASH</div>
+                        </div>
+                        <div class="flash-text">${post.content || escapeHtml(post.excerpt) || ''}</div>
+                        ${optImg}
+                        <div class="flash-footer">
+                            <div class="flash-footer-left">
+                                <span class="card-tag ${tc}">${ti} ${post.tag.toUpperCase()}</span>
+                                <div class="card-date"><i class="far fa-calendar-alt"></i> ${formatDate(post.date)}</div>
+                            </div>
+                            <div class="flash-footer-right">
+                                <button class="share-btn" data-id="${post.id}" data-title="${escapeHtml(post.title)}"><i class="fas fa-link"></i> Copiar</button>
+                                <button class="twitter-share-btn" data-id="${post.id}" data-title="${escapeHtml(post.title)}"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg> Twittear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
             return `<div class="news-card" data-id="${post.id}" style="animation-delay:${i*0.05}s">
                 <div class="image-container">${updBadge}${newBadge}
                     <img class="card-image" src="${post.image||'https://via.placeholder.com/400x180/1a1a1a/4caf50?text=MW4'}" alt="${escapeHtml(post.title)}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x180/1a1a1a/4caf50?text=MW4'">
