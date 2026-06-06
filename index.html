@@ -190,8 +190,9 @@
         .flash-account-handle { font-size: 0.58rem; color: #666; }
         .flash-badge {
             background: #ffd600; color: #000; font-size: 0.52rem; font-weight: 900;
-            letter-spacing: 1px; padding: 3px 6px 3px 7px; border-radius: 4px; white-space: nowrap;
-            flex-shrink: 0; align-self: center; text-align: center;
+            letter-spacing: 0; padding: 3px 8px; border-radius: 4px; white-space: nowrap;
+            flex-shrink: 0; align-self: center;
+            display: inline-flex; align-items: center; justify-content: center; gap: 2px;
         }
         .flash-text {
             font-size: 0.82rem; color: #ddd; line-height: 1.55; flex: 1;
@@ -573,7 +574,7 @@
                                 <div class="flash-account-name">MW4 Esp</div>
                                 <div class="flash-account-handle">@MW4esp</div>
                             </div>
-                            <div class="flash-badge">⚡ FLASH</div>
+                            <div class="flash-badge"><span>⚡</span><span>FLASH</span></div>
                         </div>
                         <div class="flash-text">${post.content || escapeHtml(post.excerpt) || ''}</div>
                         ${optImg}
