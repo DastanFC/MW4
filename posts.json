@@ -1,5 +1,16 @@
 [
   {
+    "id": 1780786344146,
+    "title": "Showcase DMZ",
+    "tag": "noticia",
+    "image": "https://i.ibb.co/gZLtbk5S/20260607-004012.jpg",
+    "excerpt": "Mañana , el gran día de DMZ",
+    "content": "Mañana día 7 de Junio , a las 19:00 hora española 🇪🇸 conoceremos por fin todos los detalles del renovado DMZ.",
+    "updated": false,
+    "flash": true,
+    "date": "2026-06-06T00:00:00.000Z"
+  },
+  {
     "id": 1780784473009,
     "title": "Primer vistazo y detalles de la base de operaciones de DMZ",
     "tag": "noticia",
