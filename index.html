@@ -1012,23 +1012,27 @@
         } else if (post.mp4) {
             html = `<video src="${escapeHtml(post.mp4)}" autoplay muted loop playsinline controls style="width:100%;display:block;border-radius:0;max-height:80vh;background:#000;"></video>`;
         } else if (post.tweet) {
-            const _tu = post.tweet.trim();
-            const _tm = _tu.match(/(?:twitter|x)\.com\/([^/?#]+)/);
-            const _th = (_tm && _tm[1] !== 'i') ? _tm[1] : null;
-            const _tHandle = _th ? '@' + _th : 'X';
-            html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg>
-                <div style="color:#fff;font-size:0.95rem;font-weight:700;">${escapeHtml(_tHandle)}</div>
-                <a href="${escapeHtml(_tu)}" target="_blank" rel="noopener"
-                   style="background:#fff;color:#000;padding:0.6rem 1.4rem;border-radius:20px;font-weight:700;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;">
-                    Ver en X
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#000"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3zM5 5h5v2H7v10h10v-3h2v5H5V5z"/></svg>
-                </a>
+            const _tu = post.tweet.trim().replace('x.com', 'twitter.com');
+            html = `<div style="padding:1.2rem;display:flex;justify-content:center;">
+                <blockquote class="twitter-tweet" data-theme="dark"><a href="${escapeHtml(_tu)}"></a></blockquote>
             </div>`;
         } else if (post.image) {
             html = `<img class="media-modal-img" src="${post.image}" alt="${post.title || ''}">`;
         }
         mediaModalContent.innerHTML = html;
+        // Renderizar widget de Twitter si hay blockquote
+        if (post.tweet) {
+            if (!document.getElementById('tw-widgets-script')) {
+                const s = document.createElement('script');
+                s.id  = 'tw-widgets-script';
+                s.src = 'https://platform.twitter.com/widgets.js';
+                s.async = true;
+                document.body.appendChild(s);
+                s.onload = () => { if (window.twttr) twttr.widgets.load(mediaModalContent); };
+            } else if (window.twttr && twttr.widgets) {
+                twttr.widgets.load(mediaModalContent);
+            }
+        }
         mediaModal.classList.add('open');
         document.body.style.overflow = 'hidden';
     }
