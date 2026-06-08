@@ -215,15 +215,17 @@
         .flash-source a { color: #4caf50; text-decoration: none; }
         .flash-source a:hover { text-decoration: underline; }
         .flash-rel-time { font-size: 0.57rem; color: #555; margin-left: auto; flex-shrink: 0; }
-        .flash-tweet-wrap {
-            width: 100%; border-radius: 10px; overflow: hidden; margin-bottom: 0.6rem;
-            background: #0d1117; border: 1px solid rgba(255,255,255,0.08);
-            min-height: 180px; position: relative;
+        .flash-tweet-preview-link { text-decoration: none; display: block; margin-bottom: 0.6rem; }
+        .flash-tweet-preview {
+            display: flex; align-items: center; gap: 0.65rem;
+            background: #0d1117; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; padding: 0.75rem 1rem;
+            transition: border-color 0.2s, background 0.2s;
         }
-        .flash-tweet-wrap iframe {
-            width: 100%; min-height: 180px; border: none; display: block;
-            border-radius: 10px;
-        }
+        .flash-tweet-preview:hover { border-color: rgba(255,255,255,0.3); background: #111d2e; }
+        .flash-tweet-preview-text { flex: 1; min-width: 0; }
+        .flash-tweet-preview-handle { font-size: 0.72rem; color: #fff; font-weight: 700; }
+        .flash-tweet-preview-cta { font-size: 0.6rem; color: #555; margin-top: 2px; }
 
         /* ===== LIVE CARD ===== */
         .news-card.live-card { border-color: rgba(229,57,53,0.45); cursor: pointer; }
@@ -701,7 +703,10 @@
 
     function shareTwitter(e, postId, title) {
         e.stopPropagation();
-        const url = `${location.origin}${location.pathname}post.html?id=${postId}`;
+        const post = allPosts.find(p => p.id === postId);
+        const url = (post?.tweet)
+            ? post.tweet
+            : `${location.origin}${location.pathname}post.html?id=${postId}`;
         const text = encodeURIComponent(`${title} #MW4 #ModernWarfare4`);
         window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}&via=MW4esp`, '_blank', 'noopener');
     }
@@ -756,8 +761,18 @@
                 } else if (post.tweet) {
                     const tweetRaw = post.tweet.replace('x.com', 'twitter.com');
                     const tweetId  = tweetRaw.split('/status/')[1]?.split('?')[0];
+                    const tweetHandle = tweetRaw.split('/status/')[0]?.split('/').pop() || 'Twitter';
                     if (tweetId) {
-                        optImg = `<div class="flash-tweet-wrap"><iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&chrome=noheader" scrolling="no" frameborder="0" allowtransparency="true"></iframe></div>`;
+                        optImg = `<a href="${escapeHtml(post.tweet)}" target="_blank" rel="noopener" class="flash-tweet-preview-link" onclick="event.stopPropagation()">
+                            <div class="flash-tweet-preview">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" style="flex-shrink:0"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg>
+                                <div class="flash-tweet-preview-text">
+                                    <div class="flash-tweet-preview-handle">@${escapeHtml(tweetHandle)}</div>
+                                    <div class="flash-tweet-preview-cta">Ver tweet en X →</div>
+                                </div>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="#555" style="flex-shrink:0;margin-left:auto"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3zM5 5h5v2H7v10h10v-3h2v5H5V5z"/></svg>
+                            </div>
+                        </a>`;
                     }
                 } else if (post.image) {
                     optImg = `<img class="flash-opt-img" src="${escapeHtml(post.image)}" alt="" loading="lazy" onerror="this.style.display='none'">`;
