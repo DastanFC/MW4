@@ -619,10 +619,13 @@
             const newBadge = isNew(post.date) ? `<div class="new-badge">NUEVO</div>` : '';
 
             if (post.flash) {
-                const hasMedia = !!(post.image || post.video || post.tweet);
-                // Thumbnail: imagen propia, o miniatura de YouTube/Streamable con play si hay vídeo
+                const hasMedia = !!(post.image || post.video || post.tweet || post.mp4);
+                // Thumbnail: mp4 directo (autoplay en miniatura) > YouTube/Streamable/Reddit > tweet > imagen
                 let optImg = '';
-                if (post.video) {
+                if (post.mp4) {
+                    // Vídeo alojado directamente (evita el embed roto de X): se reproduce de verdad en la miniatura
+                    optImg = `<div class="flash-opt-video-wrap"><video src="${escapeHtml(post.mp4)}" autoplay muted loop playsinline style="width:100%;max-height:110px;object-fit:cover;display:block;border-radius:8px;background:#000;" onerror="this.parentElement.style.display='none'"></video><div class="flash-play-btn"></div></div>`;
+                } else if (post.video) {
                     const ytMatch = post.video.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^&?/]+)/);
                     const stMatch = post.video.match(/streamable\.com\/([a-z0-9]+)/i);
                     const redMatch = post.video.match(/reddit\.com\/.*\/comments\/([a-z0-9]+)\//i);
@@ -832,6 +835,15 @@
         const post = allPosts.find(p => p.id === id);
         if (!post) return;
         let html = '';
+        if (post.mp4) {
+            html = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
+                <video src="${escapeHtml(post.mp4)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;"></video>
+            </div>`;
+            mediaModalContent.innerHTML = html;
+            mediaModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            return;
+        }
         if (post.video) {
             let src = post.video;
             // YouTube
