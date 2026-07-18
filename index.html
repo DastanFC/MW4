@@ -831,7 +831,38 @@
     const mediaModalContent = document.getElementById('mediaModalContent');
     const mediaModalClose = document.getElementById('mediaModalClose');
 
-    function openFlashModal(id, skipMp4) {
+    // ===== RESOLVER MEDIA REAL DE UN TWEET (vídeo/imagen) =====
+    // Mismo mecanismo que en post.html: usa un espejo con CORS abierto para
+    // sacar el mp4/gif real del tweet en vez de depender del embed oficial
+    // de X, que en un iframe de terceros no reproduce el vídeo (solo un
+    // botón "Watch on X" que saca de la web).
+    const tweetMediaCache = {};
+    async function resolveTweetMedia(tweetId) {
+        if (tweetMediaCache[tweetId]) return tweetMediaCache[tweetId];
+        const endpoints = [
+            `https://api.fxtwitter.com/status/${tweetId}`,
+            `https://api.vxtwitter.com/Twitter/status/${tweetId}`
+        ];
+        for (const url of endpoints) {
+            try {
+                const r = await fetch(url);
+                if (!r.ok) continue;
+                const d = await r.json();
+                const t = d.tweet || d;
+                const video = t.media?.videos?.[0] || t.media?.animated_gifs?.[0]
+                    || (Array.isArray(t.media_extended) ? t.media_extended.find(m => m.type === 'video' || m.type === 'gif') : null);
+                const videoUrl = video?.url || video?.variants?.slice(-1)[0]?.url || null;
+                const photo = t.media?.photos?.[0]?.url || (Array.isArray(t.mediaURLs) ? t.mediaURLs[0] : null);
+                const result = { video: videoUrl || null, image: photo || t.media?.videos?.[0]?.thumbnail_url || null };
+                tweetMediaCache[tweetId] = result;
+                return result;
+            } catch (e) { /* probar siguiente endpoint */ }
+        }
+        tweetMediaCache[tweetId] = null;
+        return null;
+    }
+
+    async function openFlashModal(id, skipMp4) {
         const post = allPosts.find(p => p.id === id);
         if (!post) return;
         let html = '';
@@ -877,16 +908,36 @@
             }
             html = `<div class="media-modal-iframe-wrap"><iframe src="${src}" allowfullscreen allow="autoplay; encrypted-media"></iframe></div>`;
         } else if (post.tweet) {
-            // Tweet (con o sin vídeo) — embed oficial de Twitter/X
+            // Tweet (con o sin vídeo): primero intentamos sacar el vídeo/gif
+            // real del tuit (mismo mecanismo que en post.html). Solo si eso
+            // falla caemos al embed oficial de X, que en un iframe de
+            // terceros no reproduce el vídeo y se ve descuadrado.
             // Extrae el ID numérico tras "status/" en vez de coger el último
             // trozo de la URL a lo bruto: así funciona igual con enlaces "limpios"
             // (.../status/123456789) y con enlaces que traen sufijos extra
             // (.../status/123456789/video/1, .../photo/1, con o sin query string).
             const tweetIdMatch = post.tweet.match(/status\/(\d+)/);
-            let tweetId = tweetIdMatch ? tweetIdMatch[1] : post.tweet.split('/').pop().split('?')[0];
-            html = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
-                <iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no" style="width:100%;min-height:500px;border:none;"></iframe>
+            const tweetId = tweetIdMatch ? tweetIdMatch[1] : post.tweet.split('/').pop().split('?')[0];
+
+            mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;min-height:300px;display:flex;align-items:center;justify-content:center;color:#888;font-size:0.85rem;">
+                <i class="fas fa-circle-notch fa-spin" style="margin-right:8px;"></i> Cargando vídeo…
             </div>`;
+            mediaModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            const media = await resolveTweetMedia(tweetId);
+            if (!mediaModal.classList.contains('open')) return; // el usuario cerró el modal mientras cargaba
+
+            if (media && media.video) {
+                mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
+                    <video src="${escapeHtml(media.video)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;"></video>
+                </div>`;
+            } else {
+                mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
+                    <iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no" style="width:100%;min-height:500px;border:none;"></iframe>
+                </div>`;
+            }
+            return;
         } else if (post.image) {
             html = `<img class="media-modal-img" src="${post.image}" alt="${escapeHtml(post.title || '')}">`;
         }
