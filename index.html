@@ -437,6 +437,10 @@
         .media-modal-img { width: 100%; display: block; max-height: 80vh; object-fit: contain; }
         .media-modal-iframe-wrap { position: relative; padding-top: 56.25%; }
         .media-modal-iframe-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+        /* Contenedor para el embed de Twitter/X: sin forzar 16:9, con scroll propio
+           para que el widget (que no es un vídeo panorámico) no quede recortado. */
+        .media-modal-tweet-wrap { max-height: 80vh; overflow-y: auto; padding-top: 2.4rem; }
+        .media-modal-tweet-wrap iframe { display: block; width: 100%; min-height: 500px; border: none; }
     </style>
 </head>
 <body>
@@ -624,7 +628,14 @@
                 let optImg = '';
                 if (post.mp4) {
                     // Vídeo alojado directamente (evita el embed roto de X): se reproduce de verdad en la miniatura
-                    optImg = `<div class="flash-opt-video-wrap"><video src="${escapeHtml(post.mp4)}" autoplay muted loop playsinline style="width:100%;max-height:110px;object-fit:cover;display:block;border-radius:8px;background:#000;" onerror="this.parentElement.style.display='none'"></video><div class="flash-play-btn"></div></div>`;
+                    // Si el mp4 directo falla (bloqueo de referer/CORS o enlace caducado,
+                    // algo habitual en vídeos alojados en Twitter/X), no ocultamos toda la
+                    // tarjeta: caemos a la miniatura estática + botón de play, igual que
+                    // hacemos para YouTube/Streamable/Reddit/tweet más abajo.
+                    const mp4CardFallback = post.image
+                        ? `this.outerHTML='<img src=&quot;${escapeHtml(post.image)}&quot; alt=&quot;&quot; loading=&quot;lazy&quot; style=&quot;width:100%;max-height:110px;object-fit:cover;display:block;border-radius:8px;&quot;>'`
+                        : `this.parentElement.style.display='none'`;
+                    optImg = `<div class="flash-opt-video-wrap"><video src="${escapeHtml(post.mp4)}" autoplay muted loop playsinline style="width:100%;max-height:110px;object-fit:cover;display:block;border-radius:8px;background:#000;" onerror="${mp4CardFallback}"></video><div class="flash-play-btn"></div></div>`;
                 } else if (post.video) {
                     const ytMatch = post.video.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^&?/]+)/);
                     const stMatch = post.video.match(/streamable\.com\/([a-z0-9]+)/i);
@@ -919,7 +930,7 @@
             const tweetIdMatch = post.tweet.match(/status\/(\d+)/);
             const tweetId = tweetIdMatch ? tweetIdMatch[1] : post.tweet.split('/').pop().split('?')[0];
 
-            mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;min-height:300px;display:flex;align-items:center;justify-content:center;color:#888;font-size:0.85rem;">
+            mediaModalContent.innerHTML = `<div class="media-modal-tweet-wrap" style="background:#000;border-radius:10px;min-height:300px;display:flex;align-items:center;justify-content:center;color:#888;font-size:0.85rem;">
                 <i class="fas fa-circle-notch fa-spin" style="margin-right:8px;"></i> Cargando vídeo…
             </div>`;
             mediaModal.classList.add('open');
@@ -929,12 +940,14 @@
             if (!mediaModal.classList.contains('open')) return; // el usuario cerró el modal mientras cargaba
 
             if (media && media.video) {
+                // Vídeo real ya resuelto: este sí es 16:9, aquí sí conviene el wrap de vídeo.
                 mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
                     <video src="${escapeHtml(media.video)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;"></video>
                 </div>`;
             } else {
-                mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
-                    <iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no" style="width:100%;min-height:500px;border:none;"></iframe>
+                // Embed oficial de X: usa su propio contenedor con scroll, sin forzar 16:9.
+                mediaModalContent.innerHTML = `<div class="media-modal-tweet-wrap" style="background:#000;border-radius:10px;">
+                    <iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no"></iframe>
                 </div>`;
             }
             return;
