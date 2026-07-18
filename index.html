@@ -437,13 +437,6 @@
         .media-modal-img { width: 100%; display: block; max-height: 80vh; object-fit: contain; }
         .media-modal-iframe-wrap { position: relative; padding-top: 56.25%; }
         .media-modal-iframe-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-        .media-modal-video { width: 100%; max-height: 80vh; display: block; margin: 0 auto; background: #000; border-radius: 10px; }
-        .media-modal-tweet-wrap { width: 100%; min-height: 220px; max-height: 85vh; background: #000; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .media-modal-tweet-wrap iframe { width: 100%; height: 85vh; max-height: 720px; border: none; display: block; }
-        .media-modal-loading { color: #aaa; font-size: 0.85rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
-        .media-modal-loading i { font-size: 1.6rem; color: #4caf50; animation: mmspin 1s linear infinite; }
-        @keyframes mmspin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .flash-tweet-preview { transition: background-image .2s; }
     </style>
 </head>
 <body>
@@ -660,10 +653,8 @@
                     if (post.image) {
                         optImg = `<div class="flash-opt-video-wrap"><img src="${escapeHtml(post.image)}" alt="" loading="lazy" onerror="this.style.display='none'" style="width:100%;max-height:110px;object-fit:cover;display:block;border-radius:8px;"><div class="flash-play-btn"></div></div>`;
                     } else {
-                        const tId = post.tweet.split('/').pop().split('?')[0].split('#')[0];
-                        // Mientras se resuelve el vídeo/imagen real del tweet, fondo degradado (no negro plano)
-                        optImg = `<div class="flash-opt-video-wrap flash-tweet-preview" data-tweet-id="${tId}" style="background:linear-gradient(135deg,#1a1a2e,#20293a);min-height:80px;display:flex;align-items:center;justify-content:center;position:relative;border-radius:8px;overflow:hidden;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff" style="opacity:0.4;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg>
+                        optImg = `<div class="flash-opt-video-wrap" style="background:#000;min-height:80px;display:flex;align-items:center;justify-content:center;position:relative;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff" style="opacity:0.5;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg>
                             <div class="flash-play-btn"></div>
                         </div>`;
                     }
@@ -727,7 +718,6 @@
         });
         grid.querySelectorAll('.share-btn').forEach(b => b.addEventListener('click', e => sharePost(e, b.dataset.id, b.dataset.title)));
         grid.querySelectorAll('.twitter-share-btn').forEach(b => b.addEventListener('click', e => shareTwitter(e, b.dataset.id, b.dataset.title)));
-        loadTweetPreviews();
         document.getElementById('loadMoreBtn').style.display = visiblePosts >= filtered.length ? 'none' : 'block';
     }
 
@@ -836,65 +826,22 @@
         setInterval(showNext, 4000);
     }
 
-    // ===== RESOLVER MEDIA REAL DE UN TWEET (vídeo/imagen) =====
-    // Usa un espejo público con CORS abierto para extraer el mp4/gif o la foto de portada
-    // real del tweet, en vez de depender del iframe oficial de X (que no es responsive
-    // y provoca que la ventana/miniatura salgan descuadradas).
-    const tweetMediaCache = {};
-    async function resolveTweetMedia(tweetId) {
-        if (tweetMediaCache[tweetId]) return tweetMediaCache[tweetId];
-        const endpoints = [
-            `https://api.fxtwitter.com/status/${tweetId}`,
-            `https://api.vxtwitter.com/Twitter/status/${tweetId}`
-        ];
-        for (const url of endpoints) {
-            try {
-                const r = await fetch(url);
-                if (!r.ok) continue;
-                const d = await r.json();
-                const t = d.tweet || d;
-                const video = t.media?.videos?.[0] || t.media?.animated_gifs?.[0]
-                    || (Array.isArray(t.media_extended) ? t.media_extended.find(m => m.type === 'video' || m.type === 'gif') : null);
-                const videoUrl = video?.url || video?.variants?.slice(-1)[0]?.url || null;
-                const photo = t.media?.photos?.[0]?.url || (Array.isArray(t.mediaURLs) ? t.mediaURLs[0] : null);
-                const result = { video: videoUrl || null, image: photo || t.media?.videos?.[0]?.thumbnail_url || null };
-                tweetMediaCache[tweetId] = result;
-                return result;
-            } catch (e) { /* probar siguiente endpoint */ }
-        }
-        tweetMediaCache[tweetId] = null;
-        return null;
-    }
-
-    function loadTweetPreviews() {
-        document.querySelectorAll('.flash-tweet-preview[data-tweet-id]').forEach(async el => {
-            const id = el.dataset.tweetId;
-            const media = await resolveTweetMedia(id);
-            if (!media || !el.isConnected) return;
-            if (media.video) {
-                el.style.background = '#000';
-                el.innerHTML = `<video src="${media.video}" autoplay muted loop playsinline style="width:100%;height:100%;max-height:110px;object-fit:cover;display:block;"></video><div class="flash-play-btn"></div>`;
-            } else if (media.image) {
-                el.style.backgroundImage = `url('${media.image.replace(/'/g,"%27")}')`;
-                el.style.backgroundSize = 'cover';
-                el.style.backgroundPosition = 'center';
-                el.querySelector('svg')?.remove();
-            }
-        });
-    }
-
     // ===== MODAL MULTIMEDIA FLASH =====
     const mediaModal = document.getElementById('mediaModal');
     const mediaModalContent = document.getElementById('mediaModalContent');
     const mediaModalClose = document.getElementById('mediaModalClose');
 
-    function openFlashModal(id) {
+    function openFlashModal(id, skipMp4) {
         const post = allPosts.find(p => p.id === id);
         if (!post) return;
         let html = '';
-        if (post.mp4) {
+        if (post.mp4 && !skipMp4) {
+            // Si el mp4 directo falla al cargar (enlace caducado, 403, formato no
+            // soportado), caemos al embed del tweet en vez de dejar el error nativo
+            // del <video> a la vista, siempre que también tengamos guardada la URL del tuit.
+            const mp4Fallback = post.tweet ? `window.openFlashModal(${post.id}, true)` : '';
             html = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
-                <video src="${escapeHtml(post.mp4)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;"></video>
+                <video src="${escapeHtml(post.mp4)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;" ${mp4Fallback ? `onerror="${mp4Fallback}"` : ''}></video>
             </div>`;
             mediaModalContent.innerHTML = html;
             mediaModal.classList.add('open');
@@ -930,25 +877,16 @@
             }
             html = `<div class="media-modal-iframe-wrap"><iframe src="${src}" allowfullscreen allow="autoplay; encrypted-media"></iframe></div>`;
         } else if (post.tweet) {
-            let tweetId = post.tweet.split('/').pop().split('?')[0].split('#')[0];
-            html = `<div class="media-modal-tweet-wrap" id="tweetModalWrap">
-                <div class="media-modal-loading"><i class="fas fa-circle-notch"></i> Cargando…</div>
+            // Tweet (con o sin vídeo) — embed oficial de Twitter/X
+            // Extrae el ID numérico tras "status/" en vez de coger el último
+            // trozo de la URL a lo bruto: así funciona igual con enlaces "limpios"
+            // (.../status/123456789) y con enlaces que traen sufijos extra
+            // (.../status/123456789/video/1, .../photo/1, con o sin query string).
+            const tweetIdMatch = post.tweet.match(/status\/(\d+)/);
+            let tweetId = tweetIdMatch ? tweetIdMatch[1] : post.tweet.split('/').pop().split('?')[0];
+            html = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
+                <iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no" style="width:100%;min-height:500px;border:none;"></iframe>
             </div>`;
-            mediaModalContent.innerHTML = html;
-            mediaModal.classList.add('open');
-            document.body.style.overflow = 'hidden';
-            resolveTweetMedia(tweetId).then(media => {
-                const wrap = document.getElementById('tweetModalWrap');
-                if (!wrap) return; // el modal se cerró mientras cargaba
-                if (media && media.video) {
-                    // Vídeo real del tweet: respeta su proporción, no sale descuadrado
-                    wrap.outerHTML = `<video class="media-modal-video" src="${media.video}" controls autoplay playsinline></video>`;
-                } else {
-                    // Sin vídeo extraíble: fallback al embed oficial de X
-                    wrap.outerHTML = `<div class="media-modal-tweet-wrap"><iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no" allow="autoplay"></iframe></div>`;
-                }
-            });
-            return;
         } else if (post.image) {
             html = `<img class="media-modal-img" src="${post.image}" alt="${escapeHtml(post.title || '')}">`;
         }
