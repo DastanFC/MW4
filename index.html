@@ -873,17 +873,40 @@
         return null;
     }
 
+    function handleModalMp4Error(id) {
+        const post = allPosts.find(p => p.id === id);
+        if (!post) return;
+        if (post.tweet) {
+            // Reintentamos, pero directamente al embed del tuit (nos saltamos el mp4 roto).
+            openFlashModal(id, true);
+            return;
+        }
+        // Sin tweet de respaldo: mostramos la portada si la hay, con aviso, en vez del
+        // error nativo feo del navegador.
+        if (post.image) {
+            mediaModalContent.innerHTML = `
+                <img class="media-modal-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title || '')}">
+                <div style="padding:0.75rem 1rem;color:#aaa;font-size:0.78rem;text-align:center;background:#000;">
+                    ⚠️ El vídeo no se pudo reproducir (enlace caducado o formato no compatible).
+                </div>`;
+        } else {
+            mediaModalContent.innerHTML = `
+                <div style="padding:2.5rem 1.5rem;color:#aaa;font-size:0.85rem;text-align:center;background:#000;border-radius:10px;">
+                    ⚠️ El vídeo no se pudo reproducir (enlace caducado o formato no compatible).
+                </div>`;
+        }
+    }
+
     async function openFlashModal(id, skipMp4) {
         const post = allPosts.find(p => p.id === id);
         if (!post) return;
         let html = '';
         if (post.mp4 && !skipMp4) {
             // Si el mp4 directo falla al cargar (enlace caducado, 403, formato no
-            // soportado), caemos al embed del tweet en vez de dejar el error nativo
-            // del <video> a la vista, siempre que también tengamos guardada la URL del tuit.
-            const mp4Fallback = post.tweet ? `window.openFlashModal(${post.id}, true)` : '';
+            // soportado), mostramos una alternativa decente en vez del error nativo
+            // feo del navegador: el embed del tuit si lo tenemos, o si no, la portada.
             html = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
-                <video src="${escapeHtml(post.mp4)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;" ${mp4Fallback ? `onerror="${mp4Fallback}"` : ''}></video>
+                <video src="${escapeHtml(post.mp4)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;" onerror="window.handleModalMp4Error(${post.id})"></video>
             </div>`;
             mediaModalContent.innerHTML = html;
             mediaModal.classList.add('open');
