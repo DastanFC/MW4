@@ -873,11 +873,27 @@
         return null;
     }
 
-    function showTweetEmbedFallback(tweetId) {
-        if (!mediaModal.classList.contains('open')) return;
-        mediaModalContent.innerHTML = `<div class="media-modal-tweet-wrap" style="background:#000;border-radius:10px;">
-            <iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no"></iframe>
+    // Fallback limpio cuando no se puede reproducir el vídeo del tuit aquí:
+    // en vez del iframe oficial de X (que dentro de un iframe de terceros no
+    // reproduce el vídeo, solo se ve un botón "Watch on X" descuadrado),
+    // mostramos la portada (si la tenemos) + un botón directo a X.
+    function tweetFallbackHtml(tweetId, image) {
+        const cover = image
+            ? `<img src="${escapeHtml(image)}" alt="" style="width:100%;max-height:260px;object-fit:cover;display:block;border-radius:10px 10px 0 0;">`
+            : '';
+        return `<div style="background:#000;border-radius:10px;overflow:hidden;">
+            ${cover}
+            <div style="padding:1.6rem 1.4rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.7rem;text-align:center;">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" style="opacity:0.85;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622z"/></svg>
+                <div style="color:#ddd;font-size:0.78rem;">X no permite reproducir este vídeo fuera de su plataforma</div>
+                <a href="https://x.com/i/status/${tweetId}" target="_blank" rel="noopener" style="background:#1d9bf0;color:#fff;font-weight:900;padding:0.6rem 1.6rem;border-radius:20px;text-decoration:none;font-size:0.85rem;">Ver en X ↗</a>
+            </div>
         </div>`;
+    }
+
+    function showTweetEmbedFallback(tweetId, image) {
+        if (!mediaModal.classList.contains('open')) return;
+        mediaModalContent.innerHTML = tweetFallbackHtml(tweetId, image);
     }
 
     function handleModalMp4Error(id) {
@@ -974,13 +990,12 @@
                 // Si aun así falla (enlace caducado, formato no soportado), caemos al
                 // embed oficial de X en vez de dejar el error nativo del navegador.
                 mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
-                    <video src="${escapeHtml(media.video)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;" onerror="window.showTweetEmbedFallback('${tweetId}')"></video>
+                    <video src="${escapeHtml(media.video)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;" onerror="window.showTweetEmbedFallback('${tweetId}', ${media.image ? `'${escapeHtml(media.image)}'` : 'null'})"></video>
                 </div>`;
             } else {
-                // Embed oficial de X: usa su propio contenedor con scroll, sin forzar 16:9.
-                mediaModalContent.innerHTML = `<div class="media-modal-tweet-wrap" style="background:#000;border-radius:10px;">
-                    <iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no"></iframe>
-                </div>`;
+                // Sin vídeo resuelto (o no lo tiene): portada + botón "Ver en X",
+                // en vez del iframe oficial que no reproduce nada útil aquí.
+                mediaModalContent.innerHTML = tweetFallbackHtml(tweetId, media && media.image);
             }
             return;
         } else if (post.image) {
