@@ -873,6 +873,13 @@
         return null;
     }
 
+    function showTweetEmbedFallback(tweetId) {
+        if (!mediaModal.classList.contains('open')) return;
+        mediaModalContent.innerHTML = `<div class="media-modal-tweet-wrap" style="background:#000;border-radius:10px;">
+            <iframe src="https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&dnt=true" scrolling="no"></iframe>
+        </div>`;
+    }
+
     function handleModalMp4Error(id) {
         const post = allPosts.find(p => p.id === id);
         if (!post) return;
@@ -964,8 +971,10 @@
 
             if (media && media.video) {
                 // Vídeo real ya resuelto: este sí es 16:9, aquí sí conviene el wrap de vídeo.
+                // Si aun así falla (enlace caducado, formato no soportado), caemos al
+                // embed oficial de X en vez de dejar el error nativo del navegador.
                 mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
-                    <video src="${escapeHtml(media.video)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;"></video>
+                    <video src="${escapeHtml(media.video)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;" onerror="window.showTweetEmbedFallback('${tweetId}')"></video>
                 </div>`;
             } else {
                 // Embed oficial de X: usa su propio contenedor con scroll, sin forzar 16:9.
