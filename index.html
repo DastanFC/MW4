@@ -928,8 +928,8 @@
             // Si el mp4 directo falla al cargar (enlace caducado, 403, formato no
             // soportado), mostramos una alternativa decente en vez del error nativo
             // feo del navegador: el embed del tuit si lo tenemos, o si no, la portada.
-            html = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
-                <video src="${escapeHtml(post.mp4)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;" onerror="window.handleModalMp4Error(${post.id})"></video>
+            html = `<div style="background:#000;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                <video src="${escapeHtml(post.mp4)}" controls autoplay playsinline style="max-width:100%;max-height:80vh;display:block;" onerror="window.handleModalMp4Error(${post.id})"></video>
             </div>`;
             mediaModalContent.innerHTML = html;
             mediaModal.classList.add('open');
@@ -986,11 +986,11 @@
             if (!mediaModal.classList.contains('open')) return; // el usuario cerró el modal mientras cargaba
 
             if (media && media.video) {
-                // Vídeo real ya resuelto: este sí es 16:9, aquí sí conviene el wrap de vídeo.
-                // Si aun así falla (enlace caducado, formato no soportado), caemos al
-                // embed oficial de X en vez de dejar el error nativo del navegador.
-                mediaModalContent.innerHTML = `<div class="media-modal-iframe-wrap" style="background:#000;border-radius:10px;overflow:hidden;">
-                    <video src="${escapeHtml(media.video)}" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;" onerror="window.showTweetEmbedFallback('${tweetId}', ${media.image ? `'${escapeHtml(media.image)}'` : 'null'})"></video>
+                // Vídeo real ya resuelto. Si aun así falla (enlace caducado, formato
+                // no soportado), caemos al embed oficial de X en vez de dejar el
+                // error nativo del navegador.
+                mediaModalContent.innerHTML = `<div style="background:#000;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                    <video src="${escapeHtml(media.video)}" controls autoplay playsinline style="max-width:100%;max-height:80vh;display:block;" onerror="window.showTweetEmbedFallback('${tweetId}', ${media.image ? `'${escapeHtml(media.image)}'` : 'null'})"></video>
                 </div>`;
             } else {
                 // Sin vídeo resuelto (o no lo tiene): portada + botón "Ver en X",
